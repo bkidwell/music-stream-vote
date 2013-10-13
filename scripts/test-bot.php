@@ -10,7 +10,6 @@ function botcall( $method, $args ) {
 	);
 	print_r( $fields );
 	$data = http_build_query( $fields );
-	print_r( $data );
 
 	$ch = curl_init();
 	curl_setopt( $ch, CURLOPT_URL, $url );
@@ -27,5 +26,12 @@ function botcall( $method, $args ) {
 
 $response = botcall( 'get_info', array(
 	'system_password' => 'password'
+) );
+print_r( $response );
+
+$response = botcall( 'track_start', array(
+    'system_password' => 'password',
+    'time_utc' => gmdate('Y-m-d H:i:s'),
+    'stream_title' => 'Björk - Human Behavior'
 ) );
 print_r( $response );

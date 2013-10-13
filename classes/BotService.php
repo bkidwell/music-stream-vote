@@ -2,7 +2,7 @@
 namespace GlumpNet\WordPress\MusicStreamVote;
 
 class BotService {
-	public static $methods = array( 'get_info' );
+	public static $methods = array( 'get_info', 'track_start' );
 
     function __construct() {
         add_action("parse_request", function( $wp) {
@@ -34,7 +34,27 @@ class BotService {
     }
 
     private function track_start( $args ) {
+        global $wpdb;
 
+        $time_utc = $args['time_utc'];  // YYYY-MM-DD HH:MM:SS
+        $stream_title = $args['stream_title'];
+
+        $track_id = Track::create_or_get_id($stream_title);
+        $table_name = $wpdb->prefix . PLUGIN_TABLESLUG . '_play';
+
+        $wpdb->insert(
+            $table_name,
+            array( 
+                'time_utc' => $time_utc,
+                'track_id' => $track_id,
+                'stream_title' => $stream_title
+            )
+        );
+
+        return array(
+            'status' => 'ok',
+            'error_message' => ''
+        );
     }
 
     private function fail( $message ) {
