@@ -11,18 +11,32 @@ License: GPL 3
 
 namespace GlumpNet\WordPress\MusicStreamVote;
 
-define(__NAMESPACE__ . '\\PLUGIN_DIR', dirname(__FILE__) . '/');
-define(__NAMESPACE__ . '\\PLUGIN_URL', plugins_url(basename(dirname(__FILE__))) . '/');
+define( __NAMESPACE__ . '\\PLUGIN_DIR', dirname( __FILE__ ) . '/' );
+define( __NAMESPACE__ . '\\PLUGIN_URL', plugins_url( basename( dirname( __FILE__ ) ) ) . '/' );
+define( __NAMESPACE__ . '\\PLUGIN_NAME', 'Music Stream Vote' );
+define( __NAMESPACE__ . '\\PLUGIN_SLUG', 'musicstreamvote' );
+define( __NAMESPACE__ . '\\PLUGIN_TABLESLUG', 'musvote' );
 
 spl_autoload_register(__NAMESPACE__ . '\\autoload');
-function autoload($cls) {
-    $c = ltrim($cls, '\\'); $l = strlen(__NAMESPACE__);
-    if(strncmp($c, __NAMESPACE__, $l) !== 0) { return; }
-    $c = str_replace('\\', '/', substr($c, $l)); $f = PLUGIN_DIR . 'classes' . $c . '.php';
-    if(!file_exists($f)) {
+function autoload( $cls ) {
+    $c = ltrim( $cls, '\\' ); $l = strlen( __NAMESPACE__ );
+    if ( strncmp( $c, __NAMESPACE__, $l ) !== 0 ) { return; }
+    $c = str_replace( '\\', '/', substr( $c, $l ) ); $f = PLUGIN_DIR . 'classes' . $c . '.php';
+    if ( !file_exists( $f ) ) {
         ob_clean(); echo "<br><br><pre><b>Error loading class $cls</b>\n"; debug_print_backtrace(); die();
     }
-    require_once($f);
+    require_once( $f );
 }
 
-// new Class1();
+new VotePlugin();
+new Settings();
+new BotService();
+
+register_activation_hook( __FILE__, 'musicstreamvote_install' );
+function musicstreamvote_install() {
+	VotePlugin::Installed();
+}
+register_deactivation_hook( __FILE__, 'musicstreamvote_remove' );
+function musicstreamvote_remove() {
+	VotePlugin::Removed();
+}
