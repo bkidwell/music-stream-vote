@@ -29,9 +29,23 @@ $response = botcall( 'get_info', array(
 ) );
 print_r( $response );
 
+$ts = gmdate('Y-m-d H:i:s');
+
 $response = botcall( 'track_start', array(
     'system_password' => 'password',
-    'time_utc' => gmdate('Y-m-d H:i:s'),
-    'stream_title' => 'Björk - Human Behavior'
+    'time_utc' => $ts,
+    'stream_title' => 'Björk - track1'
+) );
+print_r( $response );
+
+$response = botcall( 'post_vote', array(
+    'system_password' => 'password',
+    'time_utc' => $ts,
+    'stream_title' => 'Björk - track1',
+    'value' => 3,
+    'nick' => 'progo',
+    'user_id' => 'progo@nowhere',
+    'is_authed' => TRUE,
+    'logged_in_since_utc' => $ts
 ) );
 print_r( $response );
