@@ -3,7 +3,6 @@ namespace GlumpNet\WordPress\MusicStreamVote;
 
 class BotService {
 	public static $methods = array( 'get_info' );
-	private $password;
 
     function __construct() {
         add_action("parse_request", function( $wp) {
@@ -12,10 +11,7 @@ class BotService {
 	    		$method = $_POST['method'];
 	    		$args = json_decode( $_POST['args'], TRUE );
 
-	    		file_put_contents('/home/brendan/php.txt', $_POST );
-
-	    		$this->password = Options::get_instance()->password;
-	    		if( $this->password != $args['system_password'] ) {
+	    		if( $args['system_password'] != Options::get_instance()->password ) {
 	    			$this->fail( 'Invalid system_password.' );
 	    		}
 	    		if ( in_array( $method, self::$methods ) ) {
