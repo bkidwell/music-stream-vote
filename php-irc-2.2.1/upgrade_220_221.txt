@@ -1,0 +1,11 @@
+There are some things that have changed:
+
+1) Please go through your bot.conf file and add your options to the new 2.2.1 bot conf file because there 
+   are several new options
+
+2) You should be able to just copy your typedefs.conf and function.conf and modules over and they should work with 
+   no modification.  NOTE:  If you just copy over your old module directory and overwrite the new module directory,
+   make sure that you retain the new "default" directory, as it contains the admin dcc chat interface stuff
+
+3) Have fun?  Enjoy?  I guess?
+

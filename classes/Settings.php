@@ -16,8 +16,11 @@ class Settings {
     	$opt_saved = FALSE;
 
     	if ( $_POST[PLUGIN_SLUG . '_o'] == '1' ) {
-    		$opt->password = $_POST[PLUGIN_SLUG . '_password'];
-    		$opt_saved = TRUE;
+            foreach ( $opt->get_option_names() as $key ) {
+                $opt->__set( $key, $_POST[PLUGIN_SLUG . '_' . $key] );
+            }
+            $opt->save();
+            $opt_saved = TRUE;
     	}
 
     	include( PLUGIN_DIR . 'views/settings.php' );

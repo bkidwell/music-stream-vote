@@ -16,6 +16,7 @@ define( __NAMESPACE__ . '\\PLUGIN_URL', plugins_url( basename( dirname( __FILE__
 define( __NAMESPACE__ . '\\PLUGIN_NAME', 'Music Stream Vote' );
 define( __NAMESPACE__ . '\\PLUGIN_SLUG', 'musicstreamvote' );
 define( __NAMESPACE__ . '\\PLUGIN_TABLESLUG', 'musvote' );
+define( __NAMESPACE__ . '\\BOT_DIR', PLUGIN_DIR . 'php-irc-2.2.1/' );
 
 spl_autoload_register(__NAMESPACE__ . '\\autoload');
 function autoload( $cls ) {

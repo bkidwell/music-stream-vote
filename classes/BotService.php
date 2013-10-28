@@ -2,8 +2,6 @@
 namespace GlumpNet\WordPress\MusicStreamVote;
 
 class BotService {
-	public static $methods = array( 'get_info', 'track_start', 'post_vote' );
-
     function __construct() {
         add_action("parse_request", function( $wp) {
 	    	if ( $_POST[PLUGIN_SLUG . '_botcall'] == '1' ) {
@@ -11,14 +9,13 @@ class BotService {
 	    		$method = $_POST['method'];
 	    		$args = json_decode( $_POST['args'], TRUE );
 
-	    		if( $args['system_password'] != Options::get_instance()->password ) {
+	    		if ( $args['web_service_password'] != Options::get_instance()->web_service_password ) {
 	    			$this->fail( 'Invalid system_password.' );
 	    		}
-	    		if ( in_array( $method, self::$methods ) ) {
-	    			$result = call_user_func( array( &$this, $method ), $args );
-	    		} else {
-	    			$this->fail( 'Invalid method name.' );
-	    		}
+                if ( ! method_exists( $this, 'web_' . $method ) ) {
+                    $this->fail( 'Invalid method name.' );
+                }
+    			$result = call_user_func( array( &$this, 'web_' . $method ), $args );
 
 	    		echo json_encode( $result );
 	    		exit;
@@ -26,14 +23,35 @@ class BotService {
         });
     }
 
-    private function get_info( $args ) {
+    private function web_get_info( $args ) {
     	return array(
     		'status' => 'ok',
     		'error_message' => ''
     	);
     }
 
-    private function track_start( $args ) {
+    private function web_checkin( $args ) {
+        // TODO: record checkin time in WordPress
+        return array(
+            'status' => 'ok',
+            'error_message' => ''
+        );
+    }
+
+    private function web_get_options ( $args ) {
+        $opt = Options::get_instance();
+        $result = array();
+        foreach ( $opt->get_option_names() as $key ) {
+            $result[$key] = $opt->__get( $key );
+        }
+        return array(
+            'status' => 'ok',
+            'error_message' => '',
+            'options' => $result
+        );
+    }
+
+    private function web_track_start( $args ) {
         global $wpdb;
 
         $time_utc = $args['time_utc'];  // YYYY-MM-DD HH:MM:SS
@@ -58,7 +76,7 @@ class BotService {
         );
     }
 
-    private function post_vote( $args ) {
+    private function web_post_vote( $args ) {
         global $wpdb;
 
         $time_utc = $args['time_utc']; // YYYY-MM-DD HH:MM:SS
