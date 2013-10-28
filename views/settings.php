@@ -3,7 +3,7 @@ namespace GlumpNet\WordPress\MusicStreamVote;
 ?>
 
 <style type="text/css">
-.regular-text.msc-input-wide { width: 50em; }
+.regular-text.msv-input-wide { width: 50em; }
 </style>
 
 <div class="wrap">
