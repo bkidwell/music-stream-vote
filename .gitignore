@@ -2,3 +2,4 @@
 php-irc-2.2.1/bot.conf
 php-irc-2.2.1/modules/musicstreamvote/bootstrap.conf
 php-irc-2.2.1/modules/musicstreamvote/options.json
+php-irc-2.2.1/modules/musicstreamvote/musicstreamvote.conf
