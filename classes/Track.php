@@ -87,7 +87,7 @@ class Track {
         global $wpdb;
 
         $t_play = $wpdb->prefix . PLUGIN_TABLESLUG . '_play';
-        $count = $wpdb->query( $wpdb->prepare(
+        $count = $wpdb->get_var( $wpdb->prepare(
             "
                 SELECT count(*) FROM $t_play
                 WHERE track_id=%d

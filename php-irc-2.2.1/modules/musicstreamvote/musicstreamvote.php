@@ -138,7 +138,10 @@ class musicstreamvote extends module {
     }
 
     public function cmd_stats( $line, $args ) {
-        $this->reply( $line, 'Not implemented.' );
+        $response = $this->webservice( 'stats', array(), $line );
+        if ( $response['output'] ) {
+            $this->reply( $line, $response['output'] );
+        }
     }
 
     public function evt_join( $line ) {

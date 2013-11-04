@@ -192,6 +192,34 @@ class BotService {
         );
     }
 
+    private function web_stats( $args ) {
+        global $wpdb;
+
+        $table_name = $wpdb->prefix . PLUGIN_TABLESLUG . '_track';
+        $results = $wpdb->get_results( 
+            "
+                SELECT stream_title, vote_average
+                FROM $table_name
+                ORDER BY vote_average DESC LIMIT 10
+            "
+        );
+
+        $n = 1;
+        $out = array();
+        $out[] = "Top 10 tracks by vote average:   ";
+        foreach ( $results as $result ) {
+            $out[] = "<b>#$n</b> $result->stream_title (avg: $result->vote_average)   ";
+            if ( $n % 3 == 1 ) { $out[] = "\n"; }
+            $n++;
+        }
+
+        return array(
+            'status' => 'ok',
+            'error_message' => '',
+            'output' => trim( implode( '', $out ) )
+        );
+    }
+
     private function fail( $message ) {
     	$result = array(
     		'status' => 'error',
