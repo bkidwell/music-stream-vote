@@ -42,3 +42,4 @@ The package 'php5-json' is not installed by default in Ubuntu. Make sure PHP's j
 * Documentation: requirements, install, screenshots
 * Implement new voting era time: stats are counted only for events after a chosen time
 * Implement historical stats query
+* Implement PHP version check, requirements check
