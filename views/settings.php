@@ -4,6 +4,7 @@ namespace GlumpNet\WordPress\MusicStreamVote;
 
 <style type="text/css">
 .regular-text.msv-input-wide { width: 50em; }
+.regular-text.msv-input-tall { width: 50em; height: 14em; }
 </style>
 
 <div class="wrap">
@@ -47,6 +48,7 @@ namespace GlumpNet\WordPress\MusicStreamVote;
 	$desc = Options::$option_descriptions[$i + 1];
 	$key = Options::$option_descriptions[$i + 2];
 	$hint = Options::$option_descriptions[$i + 3];
+	$is_textarea = (Options::$option_descriptions[$i + 4] == 'msv-input-tall');
 	$input_class = trim( 'regular-text ' . Options::$option_descriptions[$i + 4] );
 	$value = $opt->__get($key);
 	if ( $prev_group != $group ) {
@@ -63,8 +65,13 @@ namespace GlumpNet\WordPress\MusicStreamVote;
 	<tr valign="top">
 	<th scope="row"><label for="<?php echo PLUGIN_SLUG . '_' . $key; ?>"><?php echo $desc; ?></label></th>
 	<td>
+		<?php if ( !$is_textarea ) : ?>
 		<input name="<?php echo PLUGIN_SLUG . '_' . $key; ?>"
 		value="<?php echo esc_attr( $value ); ?>" class="<?php echo $input_class; ?>" type="text">
+		<?php else : ?>
+		<textarea name="<?php echo PLUGIN_SLUG . '_' . $key; ?>" class="<?php echo $input_class; ?>"
+		><?php echo esc_html( $value ); ?></textarea>
+		<?php endif; ?>
 		<p class="description"><?php echo esc_html( $hint ); ?></p>
 	</td>
 	</tr>

@@ -111,10 +111,11 @@ file_put_contents( BOT_DIR . 'bot.conf', $out );
 
 // MOD_DIR/musicstreamvote.conf file
 
-$commands = explode( ' ', 'help' );
+$commands = explode( ' ', 'help vote like hate stats' );
 $out = array();
 $out[] = "file\tmusicstreamvote\tmodules/musicstreamvote/musicstreamvote.php\n";
 $out[] = "join\tmusicstreamvote\tevt_join\n";
+$out[] = "raw\tmusicstreamvote\tevt_raw\n";
 foreach ( $commands as $command ) {
     $aliases = explode( ' ', $options['cmd_' . $command] );
     foreach ( $aliases as $alias ) {

@@ -13,6 +13,7 @@ class musicstreamvote extends module {
     private $timers = array();
     private $curl = array();
     private $now_playing = '';
+    private $pending_votes = array();
 
     public function init() {
         $this->dbg( 'init()' );
@@ -55,19 +56,89 @@ class musicstreamvote extends module {
         $data = $this->streaminfo( $this->options['stream_status_url'] );
         $this->dbg( 'current stream_title: ' . $data['stream_title'] );
         if ( $data['stream_title'] != $this->now_playing ) {
+            $response = $this->webservice( 'track_start', array(
+                'time_utc' => date('Y-m-d H:i:s', time() ),
+                'stream_title' => $data['stream_title']
+            ));
+            if ( $response['output'] ) {
+                $this->announce( $response['output'] );
+            }
             $this->now_playing = $data['stream_title'];
-            $this->announce( "\02Now playing:\017 " . $this->now_playing );
         }
         $this->dbg( 'exiting evt_stream_poll()' );
         return TRUE;
     }
 
-    public function cmd_help( $line, $args ) {
-        $text = 'Hello world.';
-        if ( $args['query'] ) {
-            $text .= ' ' . $args['query'];
+    public function evt_raw( $line, $args ) {
+        $cmd = $line['cmd'];
+        if ( $cmd != 307 && $cmd != 318 ) {
+            return;
         }
-        $this->reply( $line, $text );
+
+        $subject = $line['params'];
+        if ( array_key_exists( $subject, $this->pending_votes ) ) {
+            if ( $cmd == 307 ) {
+                $this->pending_votes[$subject]['is_authed'] = 1;
+            } elseif ( $cmd == 318 ) {
+                $this->cmd_vote_finish( $subject );
+            }
+        }
+    }
+
+    public function cmd_help( $line, $args ) {
+        $response = $this->webservice( 'help', array(), $line );
+        if ( $response['output'] ) {
+            $this->reply( $line, $response['output'] );
+        }
+    }
+
+    public function cmd_vote( $line, $args ) {
+        $fromNick = $line['fromNick'];
+        $vote = array(
+            'line' => $line,
+            'time_utc' => date('Y-m-d H:i:s', time() ),
+            'stream_title' => $this->now_playing,
+            'value' => $args['query'],
+            'nick' => $fromNick,
+            'user_id' => $line['from'],
+            'is_authed' => 0
+        );
+        $this->pending_votes[$fromNick] = $vote;
+        $this->ircClass->sendRaw( "WHOIS $fromNick" );
+    }
+
+    public function cmd_vote_finish( $subject ) {
+        $vote = $this->pending_votes[$subject];
+        $line = $vote['line'];
+        $this->dbg("Continuing vote for $subject.");
+        $response = $this->webservice( 'post_vote', array(
+            'time_utc' => $vote['time_utc'],
+            'stream_title' => $vote['stream_title'],
+            'value' => $vote['value'],
+            'nick' => $vote['nick'],
+            'user_id' => $vote['user_id'],
+            'is_authed' => $vote['is_authed'],
+        ), $line );
+        print_r($response);
+
+        if ( $response['output'] ) {
+            $this->reply( $line, $response['output'] );
+        }
+        unset($this->pending_votes[$subject]);
+    }
+
+    public function cmd_like( $line, $args ) {
+        $args['query'] = '+3';
+        $this->cmd_vote( $line, $args );
+    }
+
+    public function cmd_hate( $line, $args ) {
+        $args['query'] = '-3';
+        $this->cmd_vote( $line, $args );
+    }
+
+    public function cmd_stats( $line, $args ) {
+        $this->reply( $line, 'Not implemented.' );
     }
 
     public function evt_join( $line ) {
@@ -84,14 +155,28 @@ class musicstreamvote extends module {
         } else {
             $to = $line['to'];
         }
-        $this->ircClass->privMsg($to, $text, $queue = 1);
+        $text = str_ireplace(
+            array('<b>', '</b>'),
+            array("\02", "\017"),
+            $text
+        );
+        foreach ( explode( "\n", $text ) as $output_line ) {
+            $this->ircClass->privMsg($to, $output_line, $queue = 1);
+        }
     }
 
     private function announce( $text ) {
-        foreach ( $this->in_channels as $key => $value ) {
-            $this->ircClass->privMsg(
-                $key, $text, $queue = 1
-            );
+        $text = str_ireplace(
+            array('<b>', '</b>'),
+            array("\02", "\017"),
+            $text
+        );
+        foreach ( explode( "\n", $text ) as $output_line ) {
+            foreach ( $this->in_channels as $key => $value ) {
+                $this->ircClass->privMsg(
+                    $key, $output_line, $queue = 1
+                );
+            }
         }
     }
 
@@ -99,7 +184,7 @@ class musicstreamvote extends module {
         $this->ircClass->log( "[MSV] $text" );
     }
 
-    private function webservice( $method, $args ) {
+    private function webservice( $method, $args, $line = NULL ) {
         $args['web_service_password'] = $this->options['web_service_password'];
 
         $fields = array(
@@ -134,7 +219,11 @@ class musicstreamvote extends module {
         }
 
         if ( $data['status'] == 'error' ) {
-            $this->announce( "\02Error:\017 " . $data['error_message'] );
+            if ( $line ) {
+                $this->reply( $line, "\02Error:\017 " . $data['error_message'] );
+            } else {
+                $this->announce( "\02Error:\017 " . $data['error_message'] );
+            }
         }
         // print_r($data);
 

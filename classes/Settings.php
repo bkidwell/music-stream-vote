@@ -22,6 +22,7 @@ class Settings {
         );
 
     	if ( $_POST[PLUGIN_SLUG . '_o'] == '1' ) {
+            Util::fix_wp_slashes();
             foreach ( $opt->get_option_names() as $key ) {
                 $opt->__set( $key, $_POST[PLUGIN_SLUG . '_' . $key] );
             }
