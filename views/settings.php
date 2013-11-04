@@ -19,7 +19,12 @@ namespace GlumpNet\WordPress\MusicStreamVote;
 
 <table class="form-table"><tbody>
 	<tr valign="top">
-	<th scope="row"><label for="blogname">Database tables</label></th>
+	<th scope="row"><label>Bot startup time</label></th>
+	<td>
+		<p><?php echo $out['start_time']; ?></p>
+	</td>
+	</tr>
+	<th scope="row"><label>Database tables</label></th>
 	<td>
 		<p class="description">Voting tables not created.</p>
 		<p>

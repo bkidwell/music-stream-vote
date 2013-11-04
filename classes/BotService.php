@@ -31,7 +31,10 @@ class BotService {
     }
 
     private function web_checkin( $args ) {
-        // TODO: record checkin time in WordPress
+        $state = State::get_instance();
+        $state->last_checkin_utc = gmmktime();
+        $state->save();
+
         return array(
             'status' => 'ok',
             'error_message' => ''

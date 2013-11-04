@@ -13,7 +13,13 @@ class Settings {
 
     function display_settings() {
     	$opt = Options::get_instance();
+        $state = State::get_instance();
     	$opt_saved = FALSE;
+        $out = array();
+
+        $out['start_time'] = date_i18n(
+            "Y-m-d H:i:s O", $state->last_checkin_utc + (get_option('gmt_offset') * 60 * 60), TRUE
+        );
 
     	if ( $_POST[PLUGIN_SLUG . '_o'] == '1' ) {
             foreach ( $opt->get_option_names() as $key ) {

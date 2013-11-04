@@ -1,5 +1,5 @@
 <?php
-define( MUSICSTREAMVOTE_DEBUG, TRUE );
+define( 'MUSICSTREAMVOTE_DEBUG', TRUE );
 
 class musicstreamvote extends module {
 
@@ -15,14 +15,22 @@ class musicstreamvote extends module {
     private $now_playing = '';
 
     public function init() {
+        $this->dbg( 'init()' );
+
         $this->mod_dir = dirname( __FILE__ ) . '/modules/musicstreamvote/';
+        foreach ( explode( ',', 'bootstrap.conf,musicstreamvote.conf,options.json' ) as $f ) {
+            if ( ! file_exists( $this->mod_dir . $f ) ) {
+                die( 'Fatal error: ' . $this->mod_dir . $f . "is missing.\n" );
+            }
+        }
+
         $this->options = json_decode( file_get_contents( $this->mod_dir . 'options.json' ), TRUE );
         $this->curl['wordpress'] = FALSE;
         $this->curl['streaminfo'] = FALSE;
     }
 
     public function destroy() {
-        $this->timerClass->removeTimer('msv_stream_poll');
+        $this>dbg( 'destroy()' );
         foreach ( $this->timers as $key => $value ) {
             $this->timerClass->removeTimer( $key );
         }
@@ -33,25 +41,25 @@ class musicstreamvote extends module {
 
     private function evt_logged_in() {
         if ( count($this->in_channels) > 1 ) { return; }
-        $this->webservice( 'checkin', array() );
 
+        $this->dbg( 'checking in' );
+        $this->webservice( 'checkin', array() );
+        $this->dbg( 'done checking in ' );
+
+        $this->add_timer( 'evt_stream_poll', $this->options['stream_status_poll_interval_sec'] );
         $this->evt_stream_poll();
     }
 
     public function evt_stream_poll( ) {
-        $this->ircClass->log( '!!! entering evt_stream_poll()' );
+        $this->dbg( 'entering evt_stream_poll()' );
         $data = $this->streaminfo( $this->options['stream_status_url'] );
-        $this->ircClass->log( '!!! current stream_title: ' . $data['stream_title'] );
+        $this->dbg( 'current stream_title: ' . $data['stream_title'] );
         if ( $data['stream_title'] != $this->now_playing ) {
             $this->now_playing = $data['stream_title'];
             $this->announce( "\02Now playing:\017 " . $this->now_playing );
         }
-
-        $this->delay_callback(
-            'msv_stream_poll', 'evt_stream_poll',
-            (float) $this->options['stream_status_poll_interval_sec']
-        );
-        $this->ircClass->log( '!!! exiting evt_stream_poll()' );
+        $this->dbg( 'exiting evt_stream_poll()' );
+        return TRUE;
     }
 
     public function cmd_help( $line, $args ) {
@@ -64,7 +72,7 @@ class musicstreamvote extends module {
 
     public function evt_join( $line ) {
         if ( $this->options['irc_nick'] == $line['fromNick'] ) {
-            $this->ircClass->log( '!!! evt_join(): ' . $line['text'] );
+            $this->dbg( 'evt_join(): ' . $line['text'] );
             $this->in_channels[$line['text']] = 1;
             $this->evt_logged_in();
         }
@@ -85,6 +93,10 @@ class musicstreamvote extends module {
                 $key, $text, $queue = 1
             );
         }
+    }
+
+    private function dbg( $text ) {
+        $this->ircClass->log( "[MSV] $text" );
     }
 
     private function webservice( $method, $args ) {
@@ -124,7 +136,7 @@ class musicstreamvote extends module {
         if ( $data['status'] == 'error' ) {
             $this->announce( "\02Error:\017 " . $data['error_message'] );
         }
-        print_r($data);
+        // print_r($data);
 
         return $data;
     }
@@ -171,36 +183,15 @@ class musicstreamvote extends module {
         return $data;
     }
 
-    private function delay_callback( $timer_name, $function_name, $interval_sec ) {
-        $this->ircClass->log( "!!! entering delay_callback($timer_name, $function_name, $interval_sec)" );
+    private function add_timer( $function_name, $interval_sec ) {
+        $timer_name = 'msv_' . $function_name;
+        $this->dbg( "add_timer($timer_name, $function_name, $interval_sec)" );
 
-        $this->timerClass->removeTimer( $timer_name );
         $this->timerClass->addTimer(
             $timer_name, $this, $function_name, '', $interval_sec, false
         );
         $this->timers[$timer_name] = 1;
-
-        $this->ircClass->log( "!!! exiting delay_callback($timer_name, $function_name, $interval_sec)" );
     }
 }
-
-// [01:00:47] --> progo (quassel@ZeroNode-2drmdm.xen.prgmr.com) has joined #votebot2
-// [04:58:20] (progobot@ZeroNode) > :progobot!musicstream@ZeroNode-d61b1g.res.rr.com JOIN :#votebot
-
-/*
-Array
-(
-    [from] => progobot!musicstream@ZeroNode-d61b1g.res.rr.com
-    [fromNick] => progobot
-    [fromIdent] => musicstream
-    [fromHost] => ZeroNode-d61b1g.res.rr.com
-    [cmd] => JOIN
-    [to] => :#votebot
-    [text] => #votebot
-    [params] => 
-    [raw] => :progobot!musicstream@ZeroNode-d61b1g.res.rr.com JOIN :#votebot
-)
-
-*/
 
 ?>

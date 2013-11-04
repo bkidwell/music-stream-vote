@@ -90,16 +90,7 @@ class Options {
         if ( !in_array( $property, $this->option_names ) ) {
             return FALSE;
         }
-        if ( $this->opt === NULL ) {
-            $saved = unserialize( get_option( PLUGIN_SLUG . '_options' ) );
-            foreach ( $this->option_names as $k ) {
-                if ( is_array($saved) and array_key_exists( $k, $saved )) {
-                    $this->opt[$k] = $saved[$k];
-                } else {
-                    $this->opt[$k] = '';
-                }
-            }
-        }
+        $this->load();
         return $this->opt[$property];
     }
 
@@ -107,7 +98,21 @@ class Options {
         if ( !in_array( $property, $this->option_names ) ) {
             return;
         }
+        $this->load();
         $this->opt[$property] = $value;
+    }
+
+    private function load() {
+    if ( $this->opt !== NULL ) { return; }
+        $this->opt = array();
+        $saved = unserialize( get_option( PLUGIN_SLUG . '_options' ) );
+        foreach ( $this->option_names as $k ) {
+            if ( is_array($saved) and array_key_exists( $k, $saved )) {
+                $this->opt[$k] = $saved[$k];
+            } else {
+                $this->opt[$k] = '';
+            }
+        }
     }
 
     public function save() {
