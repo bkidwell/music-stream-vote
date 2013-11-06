@@ -15,6 +15,7 @@ class musicstreamvote extends module {
     private $now_playing = '';
     private $now_playing_response = '';
     private $pending_votes = array();
+    private $last_error = '';
 
     public function init() {
         $this->dbg( 'init()' );
@@ -233,7 +234,10 @@ class musicstreamvote extends module {
             if ( $line ) {
                 $this->reply( $line, "\02Error:\017 " . $data['error_message'] );
             } else {
-                $this->announce( "\02Error:\017 " . $data['error_message'] );
+                if ( $data['error_message'] != $this->last_error ) {
+                    $this->announce( "\02Error:\017 " . $data['error_message'] );
+                    $this->last_error = $data['error_message'];
+                }
             }
         }
         // print_r($data);
