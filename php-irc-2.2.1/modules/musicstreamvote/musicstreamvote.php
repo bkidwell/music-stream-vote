@@ -27,6 +27,10 @@ class musicstreamvote extends module {
             }
         }
 
+        if ( file_exists( $this->mod_dir . 'restart' ) ) {
+            unlink( $this->mod_dir . 'restart' );
+        }
+
         $this->options = json_decode( file_get_contents( $this->mod_dir . 'options.json.php' ), TRUE );
         $this->curl['wordpress'] = FALSE;
         $this->curl['streaminfo'] = FALSE;
@@ -50,10 +54,11 @@ class musicstreamvote extends module {
         $this->dbg( 'done checking in ' );
 
         $this->add_timer( 'evt_stream_poll', $this->options['stream_status_poll_interval_sec'] );
+        $this->add_timer( 'evt_restart_poll', $this->options['restart_poll_interval_sec'] );
         $this->evt_stream_poll();
     }
 
-    public function evt_stream_poll( ) {
+    public function evt_stream_poll() {
         $this->dbg( 'entering evt_stream_poll()' );
         $data = $this->streaminfo( $this->options['stream_status_url'] );
         $this->dbg( 'current stream_title: ' . $data['stream_title'] );
@@ -79,12 +84,41 @@ class musicstreamvote extends module {
         return TRUE;
     }
 
+    public function evt_restart_poll() {
+        if ( file_exists( $this->mod_dir . 'restart' ) ) {
+            $this->announce ( 'is being restarted.', TRUE );
+            //exit();
+            $this->add_timer( 'evt_abort', 2 );
+        }
+        return TRUE;
+    }
+
+    public function evt_abort() {
+        die();
+    }
+
     public function evt_raw( $line, $args ) {
         $cmd = $line['cmd'];
-        if ( $cmd != 307 && $cmd != 318 ) {
-            return;
+        if ( $cmd == 307 || $cmd == 318 ) {
+            $this->evt_whois( $line, $args );
         }
+        if ( $cmd == 'PRIVMSG' ) {
+            if (
+                preg_match(
+                    "/[\\W]*" . $this->options['irc_nick'] . "\\W.*/i", $line['text']
+                ) ||
+                (
+                    $line['to'] == $this->options['irc_nick'] &&
+                    substr( $line['text'], 0, 1 ) != '!'
+                )
+            ) {
+                $this->evt_sayhi( $line, $args );
+            }
+        }
+    }
 
+    private function evt_whois( $line, $args ) {
+        $cmd = $line['cmd'];
         $subject = $line['params'];
         if ( array_key_exists( $subject, $this->pending_votes ) ) {
             if ( $cmd == 307 ) {
@@ -92,6 +126,16 @@ class musicstreamvote extends module {
             } elseif ( $cmd == 318 ) {
                 $this->cmd_vote_finish( $subject );
             }
+        }
+    }
+
+    private function evt_sayhi( $line, $args ) {
+        print_r($line);
+        $response = $this->webservice( 'sayhi', array(
+            'nick' => $line['fromNick'],
+        ), $line );
+        if ( $response['output'] ) {
+            $this->reply( $line, $response['output'] );
         }
     }
 
@@ -192,7 +236,7 @@ class musicstreamvote extends module {
         }
     }
 
-    private function announce( $text ) {
+    private function announce( $text, $action = FALSE ) {
         $text = str_ireplace(
             array('<b>', '</b>'),
             array("\02", "\017"),
@@ -200,9 +244,15 @@ class musicstreamvote extends module {
         );
         foreach ( explode( "\n", $text ) as $output_line ) {
             foreach ( $this->in_channels as $key => $value ) {
-                $this->ircClass->privMsg(
-                    $key, $output_line, $queue = 1
-                );
+                if ( $action ) {
+                    $this->ircClass->action(
+                        $key, $output_line, $queue = 1
+                    );
+                } else {
+                    $this->ircClass->privMsg(
+                        $key, $output_line, $queue = 1
+                    );
+                }
             }
         }
     }

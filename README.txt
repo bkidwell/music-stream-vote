@@ -34,7 +34,6 @@ The package 'php5-json' is not installed by default in Ubuntu. Make sure PHP's j
 
 == To do ==
 
-* Create signal file from WordPress to cause IRC bot to restart itself.
 * Create WordPress display code for widgets or shortcodes to display vote/play tallies.
 * Cleanup data model
 * Implement WordPress code to create/update data model in database
@@ -43,7 +42,6 @@ The package 'php5-json' is not installed by default in Ubuntu. Make sure PHP's j
 * Implement new voting era time: stats are counted only for events after a chosen time
 * Implement historical stats query
 * Implement PHP version check, requirements check
-* Help triggers: channel message "$nick: [anything]"; private message "[anything not starting with !]"
 * Implement cleanup when plugin is uninstalled http://codex.wordpress.org/Function_Reference/register_uninstall_hook
 * Implement options export / import
 * Implement history export / import

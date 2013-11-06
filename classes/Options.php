@@ -5,8 +5,10 @@ class Options {
     private static $instance;
 
     private $opt = NULL;
+    private $opt_before = NULL;
     private $option_names = NULL;
-    private $defaults = null;
+    private $defaults = NULL;
+    public $need_restart = FALSE;
 
     private function __construct() {
         $this->option_names = array();
@@ -45,9 +47,21 @@ class Options {
                 $this->opt[$k] = '';
             }
         }
+        $this->opt_before = $this->opt;
     }
 
     public function save() {
+        foreach ( OptionDefs::$option_defs as $group => $defs ) {
+            foreach ( $defs as $opt_name => $attr ) {
+                if (
+                    $attr['r'] &&
+                    $this->opt[$opt_name] != $this->opt_before[$opt_name]
+                ) {
+                    $this->need_restart = TRUE;
+                }
+            }
+        }
+
         update_option( PLUGIN_SLUG . '_options', serialize( $this->opt) );
         file_put_contents( BOT_DIR . 'modules/musicstreamvote/bootstrap.conf.php' ,
             "; <" . "?php exit(); ?" . ">\n" .

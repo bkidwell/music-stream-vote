@@ -11,7 +11,8 @@ public static $option_defs = array(
         't' => 'Nick',                 # display title
         'h' => 'Bot\'s name in chat.', # form hint
         'c' => '',                     # HTML input class
-        'd' => 'votebot',
+        'd' => 'votebot',              # default
+        'r' => TRUE,                   # requires restart
     ),
 
     'irc_nickserv_password' => array(
@@ -19,6 +20,7 @@ public static $option_defs = array(
         'h' => '',
         'c' => '',
         'd' => '',
+        'r' => TRUE,
     ),
 
     'irc_realname' => array(
@@ -26,6 +28,7 @@ public static $option_defs = array(
         'h' => 'For whois queries. Maybe include URL to your radio station web site.',
         'c' => 'msv-input-wide',
         'd' => 'Music Stream Vote ( https://github.com/bkidwell/music-stream-vote )',
+        'r' => TRUE,
     ),
 
     'irc_server' => array(
@@ -33,6 +36,7 @@ public static $option_defs = array(
         'h' => '',
         'c' => '',
         'd' => '',
+        'r' => TRUE,
     ),
 
     'irc_port' => array(
@@ -40,6 +44,7 @@ public static $option_defs = array(
         'h' => '',
         'c' => '',
         'd' => '',
+        'r' => TRUE,
     ),
 
     'irc_channels' => array(
@@ -47,6 +52,7 @@ public static $option_defs = array(
         'h' => 'Separated by spaces. Ex: "#music #chatter".',
         'c' => '',
         'd' => '',
+        'r' => TRUE,
     ),
 
     'irc_ident' => array(
@@ -54,6 +60,7 @@ public static $option_defs = array(
         'h' => 'Appears in long IRC username string after nick.',
         'c' => '',
         'd' => 'musicstreamvote',
+        'r' => TRUE,
     ),
 
 ),
@@ -64,6 +71,7 @@ public static $option_defs = array(
         'h' => '',
         'c' => 'msv-input-wide',
         'd' => '',
+        'r' => TRUE,
     ),
 
     'web_service_password' => array(
@@ -71,6 +79,7 @@ public static $option_defs = array(
         'h' => 'Used only by the IRC bot to talk to WordPress.',
         'c' => '',
         'd' => '',
+        'r' => TRUE,
     ),
 
 ),
@@ -81,6 +90,7 @@ public static $option_defs = array(
         'h' => 'An \'.xspf\' file',
         'c' => 'msv-input-wide',
         'd' => '',
+        'r' => TRUE,
     ),
 
     'stream_status_poll_interval_sec' => array(
@@ -88,6 +98,7 @@ public static $option_defs = array(
         'h' => '',
         'c' => '',
         'd' => '10',
+        'r' => TRUE,
     ),
 
 ),
@@ -98,6 +109,7 @@ public static $option_defs = array(
         'h' => 'Example: !help',
         'c' => '',
         'd' => '!help',
+        'r' => TRUE,
     ),
 
     'cmd_nowplaying' => array(
@@ -105,6 +117,7 @@ public static $option_defs = array(
         'h' => 'Example: !np',
         'c' => '',
         'd' => '!np',
+        'r' => TRUE,
     ),
 
     'cmd_vote' => array(
@@ -112,6 +125,7 @@ public static $option_defs = array(
         'h' => 'Example: !vote !v',
         'c' => '',
         'd' => '!vote !v',
+        'r' => TRUE,
     ),
 
     'cmd_unvote' => array(
@@ -119,6 +133,7 @@ public static $option_defs = array(
         'h' => 'Example: !unvote',
         'c' => '',
         'd' => '!unvote',
+        'r' => TRUE,
     ),
 
     'cmd_like' => array(
@@ -126,6 +141,7 @@ public static $option_defs = array(
         'h' => 'Example: !l',
         'c' => '',
         'd' => '!l',
+        'r' => TRUE,
     ),
 
     'cmd_hate' => array(
@@ -133,6 +149,7 @@ public static $option_defs = array(
         'h' => 'Example: !h',
         'c' => '',
         'd' => '!h',
+        'r' => TRUE,
     ),
 
     'cmd_stats' => array(
@@ -140,10 +157,19 @@ public static $option_defs = array(
         'h' => 'Example: !stats',
         'c' => '',
         'd' => '!stats',
+        'r' => TRUE,
     ),
 
 ),
 'Output Strings' => array(
+
+    'txt_sayhi' => array(
+        't' => 'Say hi',
+        'h' => 'What to say when a user is trying to find the help command.',
+        'c' => 'msv-input-wide',
+        'd' => 'Hello ${nick}. I\'m a bot for voting on the music being played. Say "${cmd_help}" for help.',
+        'r' => FALSE,
+    ),
 
     'txt_help' => array(
         't' => 'Help',
@@ -156,7 +182,8 @@ public static $option_defs = array(
 <b>!unvote</b>    Undo your last vote.
 <b>!l</b>    Vote current song with value +3.
 <b>!h</b>    Vote current song with value -3.
-<b>!stats</b>    Show some stats."
+<b>!stats</b>    Show some stats.",
+        'r' => FALSE,
     ),
 
     'txt_now_playing' => array(
@@ -164,6 +191,7 @@ public static $option_defs = array(
         'h' => '<b>Now playing:</b> ${stream_title}',
         'c' => 'msv-input-wide',
         'd' => '<b>Now playing:</b> ${stream_title}',
+        'r' => FALSE,
     ),
 
     'txt_vote_response' => array(
@@ -171,6 +199,7 @@ public static $option_defs = array(
         'h' => 'Example: <b>${nick}</b> voted ${value} for ${stream_title}.',
         'c' => 'msv-input-wide',
         'd' => '<b>${nick}</b> voted ${value} for ${stream_title}.',
+        'r' => FALSE,
     ),
 
     'txt_revote_response' => array(
@@ -178,6 +207,7 @@ public static $option_defs = array(
         'h' => 'Example: ${nick} changed vote to ${value} for ${stream_title}.',
         'c' => 'msv-input-wide',
         'd' => '<b>${nick}</b> changed vote to ${value} for ${stream_title}.',
+        'r' => FALSE,
     ),
 
     'txt_unvote_response' => array(
@@ -185,6 +215,7 @@ public static $option_defs = array(
         'h' => 'Example: <b>${nick}</b> undid a vote for ${stream_title}.',
         'c' => 'msv-input-wide',
         'd' => '<b>${nick}</b> undid a vote for ${stream_title}.',
+        'r' => FALSE,
     ),
 
 ),
@@ -195,6 +226,7 @@ public static $option_defs = array(
         'h' => 'Only for when WordPress and the bot are on the same host.',
         'c' => '',
         'd' => '10',
+        'r' => TRUE,
     ),
 
 ),

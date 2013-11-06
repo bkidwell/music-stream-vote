@@ -98,6 +98,18 @@ class BotService {
         );
     }
 
+    private function web_sayhi( $args ) {
+        $options = Options::get_instance();
+        $out = str_ireplace( '${nick}', $args['nick'], $options->txt_sayhi );
+        $out = str_ireplace( '${cmd_help}', $options->cmd_help, $out );
+        $out = str_ireplace( '${value}', $num_txt, $out );
+
+        return array(
+            'status' => 'ok',
+            'output' => $out
+        );
+    }
+
     private function web_post_vote( $args ) {
         global $wpdb;
 

@@ -15,6 +15,7 @@ class Settings {
     	$opt = Options::get_instance();
         $state = State::get_instance();
     	$opt_saved = FALSE;
+        $opt_restarted = FALSE;
         $out = array();
 
         $out['start_time'] = date_i18n(
@@ -27,6 +28,10 @@ class Settings {
                 $opt->__set( $key, $_POST[PLUGIN_SLUG . '_' . $key] );
             }
             $opt->save();
+            if ( $opt->need_restart ) {
+                touch( BOT_DIR . 'modules/musicstreamvote/restart' );
+                $opt_restarted = TRUE;
+            }
             $opt_saved = TRUE;
     	}
 

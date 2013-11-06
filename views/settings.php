@@ -14,8 +14,12 @@ namespace GlumpNet\WordPress\MusicStreamVote;
 
 <p><em>To change a setting back to its default, clear it out and save.</em></p>
 
-<?php if ( $opt_saved ): ?>
+<?php if ( $opt_saved ) : ?>
+<?php if ( $opt_restarted ) : ?>
+<div class="updated"><p><strong>Settings saved. Bot restared (if running).</strong></p></div>
+<?php else : ?>
 <div class="updated"><p><strong>Settings saved.</strong></p></div>
+<?php endif; ?>
 <?php endif; ?>
 
 <h3 class="title">Status</h3>
