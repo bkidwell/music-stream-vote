@@ -45,7 +45,6 @@ The package 'php5-json' is not installed by default in Ubuntu. Make sure PHP's j
 * Implement PHP version check, requirements check
 * Implement 'now playing' command
 * Help triggers: channel message "$nick: [anything]"; private message "[anything not starting with !]"
-* Implement unvote
 * Implement cleanup when plugin is uninstalled http://codex.wordpress.org/Function_Reference/register_uninstall_hook
 * Implement options export / import
 * Implement history export / import
