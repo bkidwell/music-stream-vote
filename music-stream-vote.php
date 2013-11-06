@@ -11,6 +11,7 @@ License: GPL 3
 
 namespace GlumpNet\WordPress\MusicStreamVote;
 
+define( __NAMESPACE__ . '\\REQUIRE_PHP_VER', '5.4.0' );
 define( __NAMESPACE__ . '\\PLUGIN_DIR', dirname( __FILE__ ) . '/' );
 define( __NAMESPACE__ . '\\PLUGIN_URL', plugins_url( basename( dirname( __FILE__ ) ) ) . '/' );
 define( __NAMESPACE__ . '\\PLUGIN_NAME', 'Music Stream Vote' );
@@ -29,15 +30,33 @@ function autoload( $cls ) {
     require_once( $f );
 }
 
-new VotePlugin();
-new Settings();
-new BotService();
+function php_fail() {
+    ?>
+    <div class="error">
+        <p>The plugin <strong>Music Stream Vote</strong> is installed but
+        won't work because it requires PHP version <?php echo REQUIRE_PHP_VER; ?>
+        or later and you are running PHP version <?php echo phpversion(); ?>.</p>
+    </div>
+    <?php
+}
 
-register_activation_hook( __FILE__, 'musicstreamvote_install' );
-function musicstreamvote_install() {
-	VotePlugin::Installed();
-}
-register_deactivation_hook( __FILE__, 'musicstreamvote_remove' );
-function musicstreamvote_remove() {
-	VotePlugin::Removed();
-}
+if (version_compare(phpversion(), REQUIRE_PHP_VER, ">=")) {
+
+    new VotePlugin();
+    new Settings();
+    new BotService();
+
+    register_activation_hook( __FILE__, 'musicstreamvote_install' );
+    function musicstreamvote_install() {
+        VotePlugin::Installed();
+    }
+    register_deactivation_hook( __FILE__, 'musicstreamvote_remove' );
+    function musicstreamvote_remove() {
+        VotePlugin::Removed();
+    }
+
+} else {
+
+    add_action( 'admin_notices', 'GlumpNet\\WordPress\\MusicStreamVote\\php_fail' );
+
+} 

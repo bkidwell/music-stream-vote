@@ -9,6 +9,15 @@ for the IRC bot. It then writes the settings to the appropriate places.
 
 define( 'MOD_DIR', dirname( __FILE__ ) . '/' );
 define( 'BOT_DIR', realpath( dirname( MOD_DIR . '../../../' ) ) . '/' );
+define( 'REQUIRE_PHP_VER', '5.4.0' );
+
+if (version_compare(phpversion(), REQUIRE_PHP_VER, "<")) {
+    echo(
+        'Error: this app requires PHP ' . REQUIRE_PHP_VER .
+        '. Found ' . phpversion() . ". Aborting.\n"
+    );
+    exit( 1 );
+}
 
 $conf = parse_ini_file( MOD_DIR . 'bootstrap.conf.php' );
 $web_service_url = $conf['web_service_url'];
