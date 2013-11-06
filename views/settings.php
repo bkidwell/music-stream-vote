@@ -40,49 +40,44 @@ namespace GlumpNet\WordPress\MusicStreamVote;
 	<input type="hidden" name="<?php echo PLUGIN_SLUG; ?>_o" value="1">
 
 	<?php
-	$group_count = 0;
-	$prev_group = '';
-	for ( $i = 0; $i < count(Options::$option_descriptions); $i += 5 ):
 
-	$group = Options::$option_descriptions[$i];
-	$desc = Options::$option_descriptions[$i + 1];
-	$key = Options::$option_descriptions[$i + 2];
-	$hint = Options::$option_descriptions[$i + 3];
-	$is_textarea = (Options::$option_descriptions[$i + 4] == 'msv-input-tall');
-	$input_class = trim( 'regular-text ' . Options::$option_descriptions[$i + 4] );
-	$value = $opt->__get($key);
-	if ( $prev_group != $group ) {
-		if ( $group_count != 0 ):
-			?></tbody></table><?php
-		endif;
-		?>
-		<h3 class="title"><?php echo $group; ?></h3>
+	$option_defs = OptionDefs::$option_defs;
+	// echo "<pre>"; print_r($option_defs); echo "</pre>";
+	foreach ( $option_defs as $group_name => $defs ) : ?>
+
+		<h3 class="title"><?php echo $group_name; ?></h3>
 		<table class="form-table"><tbody>
+
 		<?php
-	}
+		foreach ( $defs as $option_name => $attr ) :
+
+		$is_textarea = $attr['c'] == 'msv-input-tall';
+		$input_class = trim( 'regular-text ' . $attr['c'] );
+		$value = $opt->__get($option_name);
+		?>
+
+		<tr valign="top">
+		<th scope="row">
+			<label for="<?php echo PLUGIN_SLUG . '_' . $option_name; ?>"><?php echo $attr['t']; ?></label>
+		</th>
+		<td>
+			<?php if ( !$is_textarea ) : ?>
+			<input name="<?php echo PLUGIN_SLUG . '_' . $option_name; ?>"
+			value="<?php echo esc_attr( $value ); ?>" class="<?php echo $input_class; ?>" type="text">
+			<?php else : ?>
+			<textarea name="<?php echo PLUGIN_SLUG . '_' . $key; ?>" class="<?php echo $input_class; ?>"
+			><?php echo esc_html( $value ); ?></textarea>
+			<?php endif; ?>
+			<p class="description"><?php echo esc_html( $attr['h'] ); ?></p>
+		</td>
+		</tr>
+
+		<?php
+		endforeach;
+
+	?></tbody></table><?php
+	endforeach;
 	?>
-
-	<tr valign="top">
-	<th scope="row"><label for="<?php echo PLUGIN_SLUG . '_' . $key; ?>"><?php echo $desc; ?></label></th>
-	<td>
-		<?php if ( !$is_textarea ) : ?>
-		<input name="<?php echo PLUGIN_SLUG . '_' . $key; ?>"
-		value="<?php echo esc_attr( $value ); ?>" class="<?php echo $input_class; ?>" type="text">
-		<?php else : ?>
-		<textarea name="<?php echo PLUGIN_SLUG . '_' . $key; ?>" class="<?php echo $input_class; ?>"
-		><?php echo esc_html( $value ); ?></textarea>
-		<?php endif; ?>
-		<p class="description"><?php echo esc_html( $hint ); ?></p>
-	</td>
-	</tr>
-	<?php
-	$group_count++;
-	$prev_group = $group;
-
-	endfor;
-	?>
-
-	</tbody></table>
 
 	<p class="submit">
 	<input name="submit" id="submit" class="button button-primary" value="Save Changes" type="submit" />

@@ -49,3 +49,4 @@ The package 'php5-json' is not installed by default in Ubuntu. Make sure PHP's j
 * Implement cleanup when plugin is uninstalled http://codex.wordpress.org/Function_Reference/register_uninstall_hook
 * Implement options export / import
 * Implement history export / import
+* Default settings values

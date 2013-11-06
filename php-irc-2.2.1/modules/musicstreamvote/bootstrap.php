@@ -10,7 +10,7 @@ for the IRC bot. It then writes the settings to the appropriate places.
 define( 'MOD_DIR', dirname( __FILE__ ) . '/' );
 define( 'BOT_DIR', realpath( dirname( MOD_DIR . '../../../' ) ) . '/' );
 
-$conf = parse_ini_file( MOD_DIR . 'bootstrap.conf' );
+$conf = parse_ini_file( MOD_DIR . 'bootstrap.conf.php' );
 $web_service_url = $conf['web_service_url'];
 $web_service_password = $conf['web_service_password'];
 
@@ -45,11 +45,10 @@ function botcall( $method, $args ) {
 $response = botcall( 'get_options', array(
     'web_service_password' => $web_service_password
 ) );
-print_r( $response );
 
 $options = $response['options'];
 
-// BOT_DIR/bot.conf file
+// BOT_DIR/bot.conf.php file
 
 function format_opt( $opt_name) {
     global $options;
@@ -86,7 +85,7 @@ $opt_found = array(
     'channel' => 0,
     'ident' => 0
 );
-foreach ( file( BOT_DIR . 'bot.conf', FILE_IGNORE_NEW_LINES ) as $l => $text ) {
+foreach ( file( BOT_DIR . 'bot.conf.php.template', FILE_IGNORE_NEW_LINES ) as $l => $text ) {
     $opt_name = trim( explode( ' ', $text )[0] );
     if ( array_key_exists( $opt_name, $opt_found ) ) {
         if ( $opt_found[$opt_name] == 0 ) {
@@ -107,7 +106,7 @@ foreach ( $opt_found as $key => $value ) {
     }
 }
 
-file_put_contents( BOT_DIR . 'bot.conf', $out );
+file_put_contents( BOT_DIR . 'bot.conf.php', $out );
 
 // MOD_DIR/musicstreamvote.conf file
 
@@ -126,4 +125,8 @@ file_put_contents( MOD_DIR . 'musicstreamvote.conf', $out );
 
 // MOD_DIR/options.json
 
-file_put_contents( MOD_DIR . 'options.json', json_encode( $options, JSON_PRETTY_PRINT ) );
+file_put_contents(
+    MOD_DIR . 'options.json.php',
+    "/* <" . "?php exit(); ?" . ">\n" .
+    json_encode( $options, JSON_PRETTY_PRINT )
+);
