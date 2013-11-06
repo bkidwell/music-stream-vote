@@ -81,6 +81,11 @@ class BotService {
 
         Track::update_count( $track_id );
 
+        file_put_contents(
+            PLUGIN_DIR . 'now_playing.txt',
+            $stream_title
+        );
+
         return array(
             'status' => 'ok',
             'error_message' => '',

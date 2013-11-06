@@ -45,6 +45,7 @@ if (version_compare(phpversion(), REQUIRE_PHP_VER, ">=")) {
     new VotePlugin();
     new Settings();
     new BotService();
+    new ShortCodes();
 
     register_activation_hook( __FILE__, 'musicstreamvote_install' );
     function musicstreamvote_install() {
