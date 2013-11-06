@@ -114,6 +114,13 @@ public static $option_defs = array(
         'd' => '!vote !v',
     ),
 
+    'cmd_unvote' => array(
+        't' => 'Unvote command',
+        'h' => 'Example: !unvote',
+        'c' => '',
+        'd' => '!unvote',
+    ),
+
     'cmd_like' => array(
         't' => 'Like command',
         'h' => 'Example: !l',
@@ -146,6 +153,7 @@ public static $option_defs = array(
 "<b>!help</b>    Display this help.
 <b>!np</b>    Repeat last \"Now playing\" announcement.
 <b>!vote [integer]</b> (or <b>!v [integer]</b>)    Vote for currently playing song, where [integer] is from -5 (worst) to 5 (best).
+<b>!unvote</b>    Undo your last vote.
 <b>!l</b>    Vote current song with value +3.
 <b>!h</b>    Vote current song with value -3.
 <b>!stats</b>    Show some stats."
@@ -160,7 +168,7 @@ public static $option_defs = array(
 
     'txt_vote_response' => array(
         't' => 'Vote response',
-        'h' => 'Example: ${nick} voted ${value} for ${stream_title}.',
+        'h' => 'Example: <b>${nick}</b> voted ${value} for ${stream_title}.',
         'c' => 'msv-input-wide',
         'd' => '<b>${nick}</b> voted ${value} for ${stream_title}.',
     ),
@@ -170,6 +178,13 @@ public static $option_defs = array(
         'h' => 'Example: ${nick} changed vote to ${value} for ${stream_title}.',
         'c' => 'msv-input-wide',
         'd' => '<b>${nick}</b> changed vote to ${value} for ${stream_title}.',
+    ),
+
+    'txt_unvote_response' => array(
+        't' => 'Unvote response',
+        'h' => 'Example: <b>${nick}</b> undid a vote for ${stream_title}.',
+        'c' => 'msv-input-wide',
+        'd' => '<b>${nick}</b> undid a vote for ${stream_title}.',
     ),
 
 ),

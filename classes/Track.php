@@ -70,7 +70,7 @@ class Track {
                     SELECT track_id, count(id) vote_count,
                     sum(value) vote_total, avg(value) vote_average
                     FROM $t_vote
-                    WHERE track_id=%d
+                    WHERE track_id=%d AND deleted=0
                 ) v ON v.track_id = t.id
                 SET t.vote_count = v.vote_count,
                 t.vote_total = v.vote_total,

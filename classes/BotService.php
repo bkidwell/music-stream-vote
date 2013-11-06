@@ -118,7 +118,8 @@ class BotService {
         }
         if ( $num === FALSE ) {
             $this->fail(
-                'Invalid vote value. Say "' . Options::get_instance()->cmd_help . '" for help.'
+                $nick . ': Invalid vote value. Say "' .
+                Options::get_instance()->cmd_help . '" for help.'
             );
         }
 
@@ -126,13 +127,15 @@ class BotService {
         $table_name = $wpdb->prefix . PLUGIN_TABLESLUG . '_vote';
 
         if ( ! Track::is_recently_played( $track_id ) ) {
-            $this->fail( '"' . $stream_title . '" wasn\'t played recently!' );
+            $this->fail( $nick . ': "' . $stream_title . '" wasn\'t played recently!' );
         }
 
         $vote_id = $wpdb->get_var( $wpdb->prepare(
             "
                 SELECT id FROM $table_name
-                WHERE track_id=%d AND timestampdiff(minute, time_utc, utc_timestamp()) < 60
+                WHERE track_id=%d
+                AND timestampdiff(minute, time_utc, utc_timestamp()) < 60
+                AND deleted=0
             ",
             $track_id
         ) );
@@ -141,37 +144,31 @@ class BotService {
             $wpdb->update(
                 $table_name,
                 array( 
-                    'time_utc' => $time_utc,
-                    'track_id' => $track_id,
-                    'stream_title' => $stream_title,
-                    'value' => $num,
-                    'nick' => $nick,
-                    'user_id' => $user_id,
-                    'is_authed' => $is_authed),
+                    'deleted' => 1
+                ),
                 array(
                     'id' => $vote_id
                 ),
-                array( '%s', '%s', '%s', '%d', '%s', '%s', '%d' ),
+                array( '%d' ),
                 array( '%d' )
             );
             $txt_vote_response = Options::get_instance()->txt_revote_response;
         } else {
-            $wpdb->insert(
-                $table_name,
-                array( 
-                    'time_utc' => $time_utc,
-                    'track_id' => $track_id,
-                    'stream_title' => $stream_title,
-                    'value' => $num,
-                    'nick' => $nick,
-                    'user_id' => $user_id,
-                    'is_authed' => $is_authed),
-                array( '%s', '%s', '%s', '%d', '%s', '%s', '%d' )
-            );
             $txt_vote_response = Options::get_instance()->txt_vote_response;
         }
-
-        //TODO: error check
+        $wpdb->insert(
+            $table_name,
+            array( 
+                'time_utc' => $time_utc,
+                'track_id' => $track_id,
+                'stream_title' => $stream_title,
+                'value' => $num,
+                'nick' => $nick,
+                'user_id' => $user_id,
+                'is_authed' => $is_authed
+            ),
+            array( '%s', '%s', '%s', '%d', '%s', '%s', '%d' )
+        );
 
         if ( $num > 0 ) {
             $num_txt = '+' . $num;
@@ -184,6 +181,73 @@ class BotService {
         $out = str_ireplace( '${value}', $num_txt, $out );
 
         Track::update_vote( $track_id );
+
+        return array(
+            'status' => 'ok',
+            'error_message' => '',
+            'output' => $out
+        );
+    }
+
+    private function web_undo_vote( $args ) {
+        global $wpdb;
+
+        file_put_contents(
+            PLUGIN_DIR . 'temp3.txt',
+            print_r($args, TRUE)
+        );
+
+        $nick = $args['nick'];
+
+        $table_name = $wpdb->prefix . PLUGIN_TABLESLUG . '_vote';
+
+        $sql = $wpdb->prepare(
+            "
+                SELECT id, track_id, stream_title, deleted FROM $table_name
+                WHERE nick=%s
+                AND timestampdiff(minute, time_utc, utc_timestamp()) < 10
+                ORDER BY time_utc DESC
+                LIMIT 1
+            ",
+            $nick
+        );
+        file_put_contents(
+            PLUGIN_DIR . 'temp.txt',
+            print_r($sql, TRUE)
+        );
+
+        $vote = $wpdb->get_row( $sql );
+
+        file_put_contents(
+            PLUGIN_DIR . 'temp2.txt',
+            print_r($vote, TRUE)
+        );
+
+        if ( $vote == NULL ) {
+            $this->fail( $nick . ': Can\'t delete last vote if it is over 10 minutes old.' );
+        }
+
+        if ( $vote->deleted == 1 ) {
+            $this->fail( $nick . ': Your most recent vote has already been deleted.' );
+        }
+
+        $wpdb->update(
+            $table_name,
+            array( 
+                'deleted' => 1
+            ),
+            array(
+                'id' => $vote->id
+            ),
+            array( '%d' ),
+            array( '%d' )
+        );
+
+        $out = str_ireplace( '${stream_title}', $vote->stream_title, Options::get_instance()->txt_unvote_response );
+        $out = str_ireplace( '${nick}', $nick, $out );
+        $out = str_ireplace( '${value}', $num_txt, $out );
+
+        Track::update_vote( $vote->track_id );
 
         return array(
             'status' => 'ok',
@@ -243,7 +307,7 @@ update votes:
 
 update wp_musvote_track t
 left join (
-  select track_id, count(id) vote_count, sum(value) vote_total, avg(value) vote_average from wp_musvote_vote group by track_id
+  select track_id, count(id) vote_count, sum(value) vote_total, avg(value) vote_average from wp_musvote_vote where deleted = 0 group by track_id
 ) v on v.track_id = t.id
 set t.vote_count = v.vote_count,
 t.vote_total = v.vote_total,

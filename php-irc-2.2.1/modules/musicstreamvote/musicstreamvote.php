@@ -60,7 +60,7 @@ class musicstreamvote extends module {
 
         if ( $data['stream_title'] != $this->now_playing ) {
             $this->now_playing = $data['stream_title'];
-            $now_playing_response = '';
+            $this->now_playing_response = '';
         }
 
         // Try to post 'now playing' to web service on each polling cycle until success
@@ -135,12 +135,20 @@ class musicstreamvote extends module {
             'user_id' => $vote['user_id'],
             'is_authed' => $vote['is_authed'],
         ), $line );
-        print_r($response);
-
         if ( $response['output'] ) {
             $this->reply( $line, $response['output'] );
         }
         unset($this->pending_votes[$subject]);
+    }
+
+    public function cmd_unvote( $line, $args ) {
+        $response = $this->webservice( 'undo_vote', array(
+            'nick' => $line['fromNick'],
+        ), $line );
+        print_r($response);
+        if ( $response['output'] ) {
+            $this->reply( $line, $response['output'] );
+        }
     }
 
     public function cmd_like( $line, $args ) {
