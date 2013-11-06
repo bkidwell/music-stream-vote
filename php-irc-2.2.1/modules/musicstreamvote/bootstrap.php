@@ -127,6 +127,6 @@ file_put_contents( MOD_DIR . 'musicstreamvote.conf', $out );
 
 file_put_contents(
     MOD_DIR . 'options.json.php',
-    "/* <" . "?php exit(); ?" . ">\n" .
+    "/* <" . "?php exit(); ?" . "> */\n" .
     json_encode( $options, JSON_PRETTY_PRINT )
 );
