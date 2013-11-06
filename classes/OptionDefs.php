@@ -144,8 +144,8 @@ public static $option_defs = array(
         'c' => 'msv-input-tall',
         'd' =>
 "<b>!help</b>    Display this help.
-<b>!np</b>    Repeat last \"Now Playing\" announcement.
-<b>!vote [integer]</b> (or <b>!v [integer]</b>) Vote for currently playing song, where [integer] is from -5 (worst) to 5 (best).
+<b>!np</b>    Repeat last \"Now playing\" announcement.
+<b>!vote [integer]</b> (or <b>!v [integer]</b>)    Vote for currently playing song, where [integer] is from -5 (worst) to 5 (best).
 <b>!l</b>    Vote current song with value +3.
 <b>!h</b>    Vote current song with value -3.
 <b>!stats</b>    Show some stats."

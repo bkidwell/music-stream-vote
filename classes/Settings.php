@@ -30,6 +30,13 @@ class Settings {
             $opt_saved = TRUE;
     	}
 
+        $defaults = $opt->get_defaults();
+        foreach ( $opt->get_option_names() as $key ) {
+            if ( trim( $opt->__get($key) ) == '' ) {
+                $opt->__set($key, $defaults[$key]);
+            }
+        }
+
     	include( PLUGIN_DIR . 'views/settings.php' );
     }
 }

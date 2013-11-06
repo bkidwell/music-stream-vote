@@ -13,19 +13,20 @@ class musicstreamvote extends module {
     private $timers = array();
     private $curl = array();
     private $now_playing = '';
+    private $now_playing_response = '';
     private $pending_votes = array();
 
     public function init() {
         $this->dbg( 'init()' );
 
         $this->mod_dir = dirname( __FILE__ ) . '/modules/musicstreamvote/';
-        foreach ( explode( ',', 'bootstrap.conf,musicstreamvote.conf,options.json' ) as $f ) {
+        foreach ( explode( ',', 'bootstrap.conf.php,musicstreamvote.conf,options.json.php' ) as $f ) {
             if ( ! file_exists( $this->mod_dir . $f ) ) {
                 die( 'Fatal error: ' . $this->mod_dir . $f . "is missing.\n" );
             }
         }
 
-        $this->options = json_decode( file_get_contents( $this->mod_dir . 'options.json' ), TRUE );
+        $this->options = json_decode( file_get_contents( $this->mod_dir . 'options.json.php' ), TRUE );
         $this->curl['wordpress'] = FALSE;
         $this->curl['streaminfo'] = FALSE;
     }
@@ -61,6 +62,7 @@ class musicstreamvote extends module {
                 'stream_title' => $data['stream_title']
             ));
             if ( $response['output'] ) {
+                $this->now_playing_response = $response['output'];
                 $this->announce( $response['output'] );
             }
             $this->now_playing = $data['stream_title'];
@@ -89,6 +91,12 @@ class musicstreamvote extends module {
         $response = $this->webservice( 'help', array(), $line );
         if ( $response['output'] ) {
             $this->reply( $line, $response['output'] );
+        }
+    }
+
+    public function cmd_nowplaying( $line, $args ) {
+        if ( $this->now_playing_response ) {
+            $this->reply( $line, $this->now_playing_response );
         }
     }
 

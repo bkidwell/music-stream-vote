@@ -48,11 +48,6 @@ class Options {
     }
 
     public function save() {
-        foreach ( $this->option_names as $k ) {
-            if ( $this->opt[$k] == '' ) {
-                $this->opt[$k] = $this->defaults[$k];
-            }
-        }
         update_option( PLUGIN_SLUG . '_options', serialize( $this->opt) );
         file_put_contents( BOT_DIR . 'modules/musicstreamvote/bootstrap.conf.php' ,
             "; <" . "?php exit(); ?" . ">\n" .
@@ -63,6 +58,10 @@ class Options {
 
     public function get_option_names() {
         return $this->option_names;
+    }
+
+    public function get_defaults() {
+        return $this->defaults;
     }
 
     public static function get_instance() {
