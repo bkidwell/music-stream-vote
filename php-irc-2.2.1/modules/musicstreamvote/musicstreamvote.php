@@ -57,7 +57,14 @@ class musicstreamvote extends module {
         $this->dbg( 'entering evt_stream_poll()' );
         $data = $this->streaminfo( $this->options['stream_status_url'] );
         $this->dbg( 'current stream_title: ' . $data['stream_title'] );
+
         if ( $data['stream_title'] != $this->now_playing ) {
+            $this->now_playing = $data['stream_title'];
+            $now_playing_response = '';
+        }
+
+        // Try to post 'now playing' to web service on each polling cycle until success
+        if ( $this->now_playing_response == '' ) {
             $response = $this->webservice( 'track_start', array(
                 'time_utc' => date('Y-m-d H:i:s', time() ),
                 'stream_title' => $data['stream_title']
@@ -66,8 +73,8 @@ class musicstreamvote extends module {
                 $this->now_playing_response = $response['output'];
                 $this->announce( $response['output'] );
             }
-            $this->now_playing = $data['stream_title'];
         }
+
         $this->dbg( 'exiting evt_stream_poll()' );
         return TRUE;
     }
