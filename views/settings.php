@@ -12,6 +12,8 @@ namespace GlumpNet\WordPress\MusicStreamVote;
 <div id="icon-options-general" class="icon32"><br></br></div>
 <?php echo "<h2>" . PLUGIN_NAME . "</h2>"; ?>
 
+<p><em>To change a setting back to its default, clear it out and save.</em></p>
+
 <?php if ( $opt_saved ): ?>
 <div class="updated"><p><strong>Settings saved.</strong></p></div>
 <?php endif; ?>
