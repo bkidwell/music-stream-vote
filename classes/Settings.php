@@ -31,11 +31,14 @@ class Settings {
     	}
 
         $defaults = $opt->get_defaults();
+        $applied_defaults = FALSE;
         foreach ( $opt->get_option_names() as $key ) {
             if ( trim( $opt->__get($key) ) == '' ) {
                 $opt->__set($key, $defaults[$key]);
+                $applied_defaults = TRUE;
             }
         }
+        if ( $applied_defaults ) { $opt->save(); }
 
     	include( PLUGIN_DIR . 'views/settings.php' );
     }

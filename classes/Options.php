@@ -61,7 +61,23 @@ class Options {
     }
 
     public function get_defaults() {
+        $this->defaults['web_service_url'] = get_site_url();
+        if ( substr( $this->defaults['web_service_url'], -1) != '/' ) {
+            $this->defaults['web_service_url'] = $this->defaults['web_service_url'] . '/';
+        }
+        $this->defaults['web_service_password'] = $this->random_password();
         return $this->defaults;
+    }
+
+    private function random_password() {
+        $alphabet = "abcdefghijklmnopqrstuwxyzABCDEFGHIJKLMNOPQRSTUWXYZ0123456789";
+        $pass = array();
+        $alphaLength = strlen( $alphabet ) - 1;
+        for ($i = 0; $i < 16; $i++) {
+            $n = rand( 0, $alphaLength );
+            $pass[] = $alphabet[$n];
+        }
+        return implode( $pass );
     }
 
     public static function get_instance() {
