@@ -212,7 +212,7 @@ class musicstreamvote extends module {
         if ( $cmd == 'PRIVMSG' ) {
             if (
                 preg_match(
-                    "/[\\W]*" . $this->options['irc_nick'] . "\\W.*/i", $line['text']
+                    "/^[\\W]*" . $this->options['irc_nick'] . "\\W.*/i", $line['text']
                 ) ||
                 (
                     $line['to'] == $this->options['irc_nick'] &&
