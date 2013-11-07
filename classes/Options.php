@@ -1,13 +1,44 @@
 <?php
 namespace GlumpNet\WordPress\MusicStreamVote;
 
+/**
+ * Singleton class to read and write options from memory to WordPress Options and a bootstrap file for the bot
+ *
+ * @author  Brendan Kidwell <snarf@glump.net>
+ * @license  GPL3
+ * @package  music-stream-vote
+ */
 class Options {
+    /**
+     * Singleton instance
+     * @var Options
+     */
     private static $instance;
 
+    /**
+     * Current Options values
+     * @var string[]
+     */
     private $opt = NULL;
+    /**
+     * Options at the point of the last load()
+     * @var  string[]
+     */
     private $opt_before = NULL;
+    /**
+     * List of option names from OptionDefs
+     * @var string[]
+     */
     private $option_names = NULL;
+    /**
+     * Key-Value list of defaults for each Option
+     * @var string[]
+     */
     private $defaults = NULL;
+    /**
+     * Bot needs to be restarted after last save().
+     * @var boolean
+     */
     public $need_restart = FALSE;
 
     private function __construct() {
@@ -20,6 +51,11 @@ class Options {
         }
     }
 
+    /**
+     * Class property getter
+     * @param  string $property Valid option name
+     * @return mixed
+     */
     public function __get( $property ) {
         if ( !in_array( $property, $this->option_names ) ) {
             return FALSE;
@@ -28,6 +64,11 @@ class Options {
         return $this->opt[$property];
     }
 
+    /**
+     * Class property setter
+     * @param string $property Valid option name
+     * @param mixed $value
+     */
     public function __set( $property, $value ) {
         if ( !in_array( $property, $this->option_names ) ) {
             return;
@@ -36,6 +77,10 @@ class Options {
         $this->opt[$property] = $value;
     }
 
+    /**
+     * Load Options from WordPress.
+     * @return void
+     */
     private function load() {
         if ( $this->opt !== NULL ) { return; }
         $this->opt = array();
@@ -50,6 +95,10 @@ class Options {
         $this->opt_before = $this->opt;
     }
 
+    /**
+     * Save Options to WordPress and 'modules/musicstream/bootstrap.conf.php'.
+     * @return void
+     */
     public function save() {
         foreach ( OptionDefs::$option_defs as $group => $defs ) {
             foreach ( $defs as $opt_name => $attr ) {
@@ -70,10 +119,18 @@ class Options {
         );
     }
 
+    /**
+     * Get option_names
+     * @return string[]
+     */
     public function get_option_names() {
         return $this->option_names;
     }
 
+    /**
+     * Get Key-Value list of defaults
+     * @return string[]
+     */
     public function get_defaults() {
         $this->defaults['web_service_url'] = get_site_url();
         if ( substr( $this->defaults['web_service_url'], -1) != '/' ) {
@@ -83,6 +140,10 @@ class Options {
         return $this->defaults;
     }
 
+    /**
+     * Generate random default API password (alphanumeric, 16 characters)
+     * @return string
+     */
     private function random_password() {
         $alphabet = "abcdefghijklmnopqrstuwxyzABCDEFGHIJKLMNOPQRSTUWXYZ0123456789";
         $pass = array();
@@ -94,6 +155,10 @@ class Options {
         return implode( $pass );
     }
 
+    /**
+     * Get singleton instance
+     * @return Options
+     */
     public static function get_instance() {
         if ( !self::$instance ) { self::$instance = new Options(); }
         return self::$instance;

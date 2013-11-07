@@ -1,7 +1,17 @@
 <?php
 namespace GlumpNet\WordPress\MusicStreamVote;
 
+/**
+ * Music Stream Vote Settings in WordPress Admin screen
+ *
+ * @author  Brendan Kidwell <snarf@glump.net>
+ * @license  GPL3
+ * @package  music-stream-vote
+ */
 class Settings {
+    /**
+     * Add display_settings() to admin screen.
+     */
     function __construct() {
         add_action('admin_menu', function() {
         	add_options_page(
@@ -11,6 +21,10 @@ class Settings {
         });
     }
 
+    /**
+     * Display Settings page.
+     * @return void
+     */
     function display_settings() {
     	$opt = Options::get_instance();
         $state = State::get_instance();

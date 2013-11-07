@@ -1,7 +1,17 @@
 <?php
 namespace GlumpNet\WordPress\MusicStreamVote;
 
+/**
+ * Web service to connect the bot to WordPress
+ *
+ * @author  Brendan Kidwell <snarf@glump.net>
+ * @license  GPL3
+ * @package  music-stream-vote
+ */
 class BotService {
+    /**
+     * Patch the 'parse_request' action in WordPress to handle calls to this web service.
+     */
     function __construct() {
         add_action("parse_request", function( $wp) {
 	    	if ( $_POST[PLUGIN_SLUG . '_botcall'] == '1' ) {
@@ -23,13 +33,11 @@ class BotService {
         });
     }
 
-    private function web_get_info( $args ) {
-    	return array(
-    		'status' => 'ok',
-    		'error_message' => ''
-    	);
-    }
-
+    /**
+     * (Web service method) Notify WordPress that the bot is online.
+     * @param  mixed[] $args an empty array
+     * @return mixed[] status; error_message
+     */
     private function web_checkin( $args ) {
         $state = State::get_instance();
         $state->last_checkin_utc = gmmktime();
@@ -41,6 +49,11 @@ class BotService {
         );
     }
 
+    /**
+     * (Web service method) Fetch all application options.
+     * @param  mixed[] $args an empty array
+     * @return mixed[] status; error_message; options (key => value)
+     */
     private function web_get_options ( $args ) {
         $opt = Options::get_instance();
         $result = array();
@@ -54,13 +67,18 @@ class BotService {
         );
     }
 
+    /**
+     * (Web service method) Submit track start event
+     * @param  mixed[] $args time_utc (YYYY-MM-DD); stream_title
+     * @return mixed[] status; error_message; output (what to announce in IRC chat room)
+     */
     private function web_track_start( $args ) {
         $time_utc = $args['time_utc'];  // YYYY-MM-DD HH:MM:SS
         $stream_title = $args['stream_title'];
         $track_id = Track::create_or_get_id( $stream_title );
 
         Play::new_play( $time_utc, $track_id, $stream_title );
-        Track::update_count( $track_id );
+        Track::update_play_count( $track_id );
 
         file_put_contents(
             PLUGIN_DIR . 'now_playing.txt',
@@ -77,6 +95,11 @@ class BotService {
         );
     }
 
+    /**
+     * (Web service method) Get Help string
+     * @param  mixed[] $args an empty array
+     * @return mixed[] status; error_message; output (what to announce in IRC chat room)
+     */
     private function web_help( $args ) {
         return array(
             'status' => 'ok',
@@ -84,6 +107,11 @@ class BotService {
         );
     }
 
+    /**
+     * (Web service method) Get one-line greeting string
+     * @param  mixed[] $args an empty array
+     * @return mixed[] status; error_message; output (what to announce in IRC chat room)
+     */
     private function web_sayhi( $args ) {
         $options = Options::get_instance();
         $out = str_ireplace( '${nick}', $args['nick'], $options->txt_sayhi );
@@ -96,6 +124,11 @@ class BotService {
         );
     }
 
+    /**
+     * (Web service method) Submit vote for current track
+     * @param  mixed[] $args time_utc (YYYY-MM-DD); stream_title; value (-5 .. 5); nick; user_id; is_authed (0|1)
+     * @return mixed[] status; error_message; output (what to announce in IRC chat room)
+     */
     private function web_post_vote( $args ) {
         $time_utc = $args['time_utc']; // YYYY-MM-DD HH:MM:SS
         $stream_title = $args['stream_title'];
@@ -156,6 +189,11 @@ class BotService {
         );
     }
 
+    /**
+     * (Web service method) Undo vote for current track (for this nick)
+     * @param  mixed[] $args nick
+     * @return mixed[] status; error_message; output (what to announce in IRC chat room)
+     */
     private function web_undo_vote( $args ) {
         $nick = $args['nick'];
         $vote = Vote::get_undoable_vote( $nick );
@@ -181,6 +219,11 @@ class BotService {
         );
     }
 
+    /**
+     * (Web service method) Get current top 10 by vote sum
+     * @param  mixed[] $args an empty array
+     * @return mixed[] status; error_message; output (what to announce in IRC chat room)
+     */
     private function web_stats( $args ) {
         $results = Track::top_ten_by_vote();
 
@@ -200,6 +243,11 @@ class BotService {
         );
     }
 
+    /**
+     * Return a failure result from a web service call
+     * @param  string $message
+     * @return void
+     */
     private function fail( $message ) {
     	$result = array(
     		'status' => 'error',

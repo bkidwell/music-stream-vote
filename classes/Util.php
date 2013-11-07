@@ -1,8 +1,19 @@
 <?php
 namespace GlumpNet\WordPress\MusicStreamVote;
 
+/**
+ * Utility methods
+ *
+ * @author  Brendan Kidwell <snarf@glump.net>
+ * @license  GPL3
+ * @package  music-stream-vote
+ */
 class Util {
-	public static function json_last_error_msg() {
+	/**
+     * Convert last JSON error to a string.
+     * @return string
+     */
+    public static function json_last_error_msg() {
         static $errors = array(
             JSON_ERROR_NONE             => null,
             JSON_ERROR_DEPTH            => 'Maximum stack depth exceeded',
@@ -15,6 +26,10 @@ class Util {
         return array_key_exists($error, $errors) ? $errors[$error] : "Unknown error ({$error})";
 	}
 
+    /**
+     * Make HTTP request variables usable. (WordPress pollutes them with backslash escape characters.)
+     * @return void
+     */
     public function fix_wp_slashes() {
         function stripslashes_array(&$arr) {
             foreach ($arr as $k => &$v) {

@@ -1,4 +1,12 @@
 <?php
+/**
+ * View for Settings screen
+ *
+ * @author  Brendan Kidwell <snarf@glump.net>
+ * @license  GPL3
+ * @package  music-stream-vote
+ */
+
 namespace GlumpNet\WordPress\MusicStreamVote;
 ?>
 

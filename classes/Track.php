@@ -1,12 +1,28 @@
 <?php
 namespace GlumpNet\WordPress\MusicStreamVote;
 
+/**
+ * DB: Methods for Track database objects
+ *
+ * @author  Brendan Kidwell <snarf@glump.net>
+ * @license  GPL3
+ * @package  music-stream-vote
+ */
 class Track {
 
+    /**
+     * Get table name for Track objects.
+     * @return string
+     */
     public static function table_name() {
         return $wpdb->prefix . PLUGIN_TABLESLUG . '_track';
     }
 
+    /**
+     * Create ID for 'stream_title' or get existing ID for this value.
+     * @param  string $stream_title
+     * @return int
+     */
     public static function create_or_get_id( $stream_title ) {
         global $wpdb;
 
@@ -43,6 +59,11 @@ class Track {
         return $id;
     }
 
+    /**
+     * Update aggregate vote values for this 'track_id'.
+     * @param  int $track_id
+     * @return void
+     */
     public static function update_vote( $track_id ) {
         global $wpdb;
 
@@ -64,7 +85,12 @@ class Track {
         ) );
     }
 
-    public static function update_count( $track_id ) {
+    /**
+     * Update play count for this 'track_id'.
+     * @param  int $track_id
+     * @return void
+     */
+    public static function update_play_count( $track_id ) {
         global $wpdb;
 
         $wpdb->query( $wpdb->prepare(
@@ -81,6 +107,11 @@ class Track {
         ) );
     }
 
+    /**
+     * Was this 'track_id' played in the last 60 minutes?
+     * @param  int  $track_id
+     * @return boolean
+     */
     public static function is_recently_played( $track_id ) {
         global $wpdb;
 
@@ -95,6 +126,10 @@ class Track {
         return $count > 0;
     }
 
+    /**
+     * Get top ten tracks by vote.
+     * @return [type]
+     */
     public static function top_ten_by_vote() {
         global $wpdb;
 
@@ -107,6 +142,11 @@ class Track {
         );
     }
 
+    /**
+     * Get normalized 'track_key' for a given 'stream_title'
+     * @param  string $text
+     * @return string
+     */
     private static function key_cleanup( $text ) {
         // remove accents
         $text = @iconv('UTF-8', 'us-ascii//TRANSLIT', $text);

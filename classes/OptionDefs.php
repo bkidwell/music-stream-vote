@@ -1,7 +1,18 @@
 <?php
 namespace GlumpNet\WordPress\MusicStreamVote;
 
+/**
+ * (Read-only) list of Option GROUPS -> NAMES -> {'T'itle, 'H'int, html 'C'lass, 'D'efault, 'R'equires restart}
+ *
+ * @author  Brendan Kidwell <snarf@glump.net>
+ * @license  GPL3
+ * @package  music-stream-vote
+ */
 class OptionDefs {
+/**
+ * Class payload
+ * @var array
+ */
 public static $option_defs = array(
 
 

@@ -1,12 +1,29 @@
 <?php
 namespace GlumpNet\WordPress\MusicStreamVote;
 
+/**
+ * DB: Methods for Vote database objects
+ *
+ * @author  Brendan Kidwell <snarf@glump.net>
+ * @license  GPL3
+ * @package  music-stream-vote
+ */
 class Vote {
 
+    /**
+     * Get table name for Vote objects.
+     * @return string
+     */
     public static function table_name() {
         return $wpdb->prefix . PLUGIN_TABLESLUG . '_vote';
     }
 
+    /**
+     * Get latest (1) 'vote_id' for this 'track_id' and 'nick' in the last 60 minutes or NULL.
+     * @param  int $track_id
+     * @param  string $nick
+     * @return int
+     */
     public static function get_recent_id( $track_id, $nick ) {
         global $wpdb;
 
@@ -22,6 +39,11 @@ class Vote {
         ) );
     }
 
+    /**
+     * Get latest (1) Vote object for 'nick' in the last 10 minutes or NULL.
+     * @param  string $nick
+     * @return object
+     */
     public static function get_undoable_vote( $nick ) {
         global $wpdb;
 
@@ -37,7 +59,17 @@ class Vote {
         ) );
     }
 
-
+    /**
+     * Record a Vote.
+     * @param  string $time_utc (YYYY-MM-DD HH:MM:SS)
+     * @param  int $track_id
+     * @param  string $stream_title
+     * @param  int $value
+     * @param  string $nick
+     * @param  string $user_id
+     * @param  boolean $is_authed
+     * @return void
+     */
     public static function new_vote(
         $time_utc, $track_id, $stream_title, $value, $nick, $user_id, $is_authed
     ) {
@@ -58,6 +90,11 @@ class Vote {
         );
     }
 
+    /**
+     * Delete a Vote.
+     * @param  int $vote_id
+     * @return void
+     */
     public static function delete( $vote_id ) {
         global $wpdb;
 

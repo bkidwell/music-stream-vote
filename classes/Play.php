@@ -1,12 +1,30 @@
 <?php
 namespace GlumpNet\WordPress\MusicStreamVote;
 
+/**
+ * DB: Methods for Play database objects
+ *
+ * @author  Brendan Kidwell <snarf@glump.net>
+ * @license  GPL3
+ * @package  music-stream-vote
+ */
 class Play {
 
+    /**
+     * Get table name for Play objects.
+     * @return string
+     */
     public static function table_name() {
         return $wpdb->prefix . PLUGIN_TABLESLUG . '_play';
     }
 
+    /**
+     * Record new Play object.
+     * @param  string $time_utc (YYYY-MM-DD HH:MM:SS)
+     * @param  int $track_id
+     * @param  string $stream_title
+     * @return void
+     */
     public static function new_play( $time_utc, $track_id, $stream_title ) {
         global $wpdb;
 
