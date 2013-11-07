@@ -19,7 +19,7 @@ class State {
      * @var string[]
      */
     public static $state_names = array(
-        'last_checkin_utc'
+        'last_checkin_utc', 'db_version'
     );
     /**
      * Current State values

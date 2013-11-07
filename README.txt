@@ -35,10 +35,6 @@ The package 'php5-json' is not installed by default in Ubuntu. Make sure PHP's j
 == To do ==
 
 * Create WordPress display code for widgets or shortcodes to display vote/play tallies.
-* Cleanup data model
-* Implement WordPress code to create/update data model in database
-* Code cleanup
-  * Break up modules/musicstreamvote.php into more than one class
 * Documentation: requirements, install, screenshots
 * Implement new voting era time: stats are counted only for events after a chosen time
 * Implement historical stats query

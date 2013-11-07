@@ -60,6 +60,10 @@ define( __NAMESPACE__ . '\\DB_ARTIST_LEN', 100 );
  * Max length in DB for track title
  */
 define( __NAMESPACE__ . '\\DB_TITLE_LEN', 100 );
+/**
+ * Database schema version
+ */
+define( __NAMESPACE__ . '\\DB_VERSION', 1 );
 
 spl_autoload_register( __NAMESPACE__ . '\\autoload' );
 /**
@@ -91,18 +95,28 @@ function php_fail() {
     <?php
 }
 
+/**
+ * Plugin was activated.
+ * @return void
+ */
+function activate() {
+}
+/**
+ * Plugin was deactivated.
+ * @return void
+ */
+function deactivate() {
+}
+
 if (version_compare(phpversion(), REQUIRE_PHP_VER, ">=")) {
 
+    new Db();         // database structure
     new Settings();   // settings screen
     new BotService(); // web service for IRC bot
     new ShortCodes(); // shortcodes
 
-    register_activation_hook( __FILE__, 'musicstreamvote_install' );
-    function musicstreamvote_install() {
-    }
-    register_deactivation_hook( __FILE__, 'musicstreamvote_remove' );
-    function musicstreamvote_remove() {
-    }
+    //register_activation_hook( __FILE__, __NAMESPACE__ . '\\activate' );
+    //register_deactivation_hook( __FILE__, __NAMESPACE__ . '\\deactivate' );
 
 } else {
 

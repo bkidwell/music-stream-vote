@@ -15,6 +15,7 @@ class Track {
      * @return string
      */
     public static function table_name() {
+        global $wpdb;
         return $wpdb->prefix . PLUGIN_TABLESLUG . '_track';
     }
 
@@ -36,7 +37,7 @@ class Track {
         $id = $wpdb->get_var( $wpdb->prepare(
             "
                 SELECT id
-                FROM " . Track::table_name . "
+                FROM " . Track::table_name() . "
                 WHERE track_key = %s
             ", 
             $track_key
@@ -44,7 +45,7 @@ class Track {
 
         if ( $id === NULL ) {
             $wpdb->insert( 
-                Track::table_name, 
+                Track::table_name(), 
                 array( 
                     'stream_title' => substr( $stream_title, 0, DB_STREAM_TITLE_LEN ) ,
                     'track_key' => $track_key,
@@ -133,10 +134,11 @@ class Track {
     public static function top_ten_by_vote() {
         global $wpdb;
 
-        $results = $wpdb->get_results( 
+        return $wpdb->get_results( 
             "
                 SELECT stream_title, vote_average
                 FROM ".Track::table_name()."
+                WHERE vote_average IS NOT NULL
                 ORDER BY vote_average DESC LIMIT 10
             "
         );

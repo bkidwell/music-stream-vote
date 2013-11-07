@@ -15,6 +15,7 @@ class Vote {
      * @return string
      */
     public static function table_name() {
+        global $wpdb;
         return $wpdb->prefix . PLUGIN_TABLESLUG . '_vote';
     }
 
@@ -29,7 +30,7 @@ class Vote {
 
         return $wpdb->get_var( $wpdb->prepare(
             "
-                SELECT id FROM $table_name
+                SELECT id FROM ".Vote::table_name()."
                 WHERE track_id=%d
                 AND nick=%s
                 AND timestampdiff(minute, time_utc, utc_timestamp()) < 60

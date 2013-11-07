@@ -15,6 +15,7 @@ class Play {
      * @return string
      */
     public static function table_name() {
+        global $wpdb;
         return $wpdb->prefix . PLUGIN_TABLESLUG . '_play';
     }
 
