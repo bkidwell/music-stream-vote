@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<phpdoc>
+  <title>Music Stream Vote - Bot</title>
+  <parser>
+    <target>../../../docs/bot</target>
+  </parser>
+  <transformer>
+    <target>../../../docs/bot</target>
+  </transformer>
+  <files>
+    <directory>.</directory>
+    <ignore>bootstrap.conf.php</ignore>
+    <ignore>options.json.php</ignore>
+  </files>
+</phpdoc>

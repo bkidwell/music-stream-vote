@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<phpdoc>
+  <title>Music Stream Vote - WordPress Back-End</title>
+  <parser>
+    <target>docs/api</target>
+  </parser>
+  <transformer>
+    <target>docs/api</target>
+  </transformer>
+  <files>
+    <directory>.</directory>
+    <ignore>php-irc-2.2.1/</ignore>
+  </files>
+</phpdoc>
