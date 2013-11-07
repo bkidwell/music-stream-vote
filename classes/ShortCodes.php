@@ -15,6 +15,8 @@ class ShortCodes {
     public function __construct() {
         add_shortcode( 'now_playing', array( &$this, 'now_playing' ) );
         add_shortcode( 'recent_tracks', array( &$this, 'recent_tracks' ) );
+        add_shortcode( 'last_day', array( &$this, 'last_day' ) );
+        add_shortcode( 'top_hundred', array( &$this, 'top_hundred' ) );
         add_action( 'wp_enqueue_scripts', array( &$this, 'add_js' ) );
         add_action( 'wp_head', array( &$this, 'js_vars' ) );
     }
@@ -70,4 +72,42 @@ class ShortCodes {
         }
         return '';
     }
+
+    /**
+     * List last 24 hours
+     * @param  string[] $atts
+     * @return string
+     */
+    public function last_day( $atts ) {
+        $day = Play::last_day();
+        $out = array();
+        $out[] = "<p>";
+        foreach ( $day as $play ) {
+            //$out[] = date( 'H:i:s', $play->time_utc ) . ' UTC: ' .
+            $out[] = $play->time_utc . ' UTC: ' .
+            esc_html( $play->stream_title ) . "<br />\n";
+        }
+        $out[] = "</p>\n";
+        return implode( $out );
+    }
+
+    /**
+     * Top 100 tracks by vote
+     * @param  string[] $atts
+     * @return string
+     */
+    public function top_hundred( $atts ) {
+        $top = Track::top_hundred_by_vote();
+        $out = array();
+        $out[] = "<p>";
+        $n = 1;
+        $out = array();
+        foreach ( $top as $result ) {
+            $out[] = "<b>#$n</b> " . esc_html($result->stream_title) . " (avg: $result->vote_average)<br />\n";
+            $n++;
+        }
+        $out[] = "</p>\n";
+        return implode( $out );
+    }
+
 }

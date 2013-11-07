@@ -64,4 +64,21 @@ class Play {
         );
     }
 
+    /**
+     * Last 24 hours of play events
+     * @return object[]
+     */
+    public static function last_day() {
+        global $wpdb;
+
+        return $wpdb->get_results(
+            "
+                SELECT time_utc, stream_title
+                FROM ".Play::table_name()."
+                WHERE time_utc > date_sub(now(), interval 1 day)
+                ORDER BY time_utc ASC
+            "
+        );
+    }
+
 }

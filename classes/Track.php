@@ -134,12 +134,29 @@ class Track {
     public static function top_ten_by_vote() {
         global $wpdb;
 
-        return $wpdb->get_results( 
+        return $wpdb->get_results(
             "
                 SELECT stream_title, vote_average
                 FROM ".Track::table_name()."
                 WHERE vote_average IS NOT NULL
                 ORDER BY vote_average DESC LIMIT 10
+            "
+        );
+    }
+
+    /**
+     * Get top 100 tracks by vote.
+     * @return object[]
+     */
+    public static function top_hundred_by_vote() {
+        global $wpdb;
+
+        return $wpdb->get_results(
+            "
+                SELECT stream_title, vote_average
+                FROM ".Track::table_name()."
+                WHERE vote_average IS NOT NULL
+                ORDER BY vote_average DESC LIMIT 100
             "
         );
     }
