@@ -3,7 +3,7 @@ Contributors: bkidwell@github
 Donate link: http://rynothebearded.com/
 Tags: IceCast, music, radio, IRC, bot, vote, top-ten
 Requires at least: 3.6.0
-Tested up to: 3.6.1
+Tested up to: 3.7.0
 Stable tag: master
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -24,20 +24,16 @@ Requires PHP 5.4.
 
 The package 'php5-json' is not installed by default in Ubuntu. Make sure PHP's json library is installed in your OS.
 
-== Implemented so far ==
-
-* Most of IRC bot: help, vote, stats
-* Options screen
-* Polling stream_title from IceCast status URL
-* WordPress writes URL and password to bootstrap file for bot
-* Bot's bootstrap script loads all options from WordPress into appropriate places in bot
-
 == To do ==
 
-* Create WordPress display code for widgets or shortcodes to display vote/play tallies.
 * Documentation: requirements, install, screenshots
 * Implement new voting era time: stats are counted only for events after a chosen time
 * Implement historical stats query
 * Implement cleanup when plugin is uninstalled http://codex.wordpress.org/Function_Reference/register_uninstall_hook
 * Implement options export / import
 * Implement history export / import
+
+== Changelog ==
+
+= 1.0 =
+* Initial release.

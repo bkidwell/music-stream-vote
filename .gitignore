@@ -7,3 +7,4 @@ php-irc-2.2.1/modules/musicstreamvote/options.json.php
 php-irc-2.2.1/modules/musicstreamvote/musicstreamvote.conf
 docs/api
 docs/bot
+dist
