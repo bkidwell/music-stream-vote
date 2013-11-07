@@ -5,7 +5,7 @@ class ShortCodes {
     public function __construct() {
         add_shortcode( 'now_playing', array( &$this, 'now_playing' ) );
         add_action( 'wp_enqueue_scripts', array( &$this, 'add_js' ) );
-        add_action('wp_head', array( &$this, 'js_vars' ) );
+        add_action( 'wp_head', array( &$this, 'js_vars' ) );
     }
 
     public function js_vars() {
