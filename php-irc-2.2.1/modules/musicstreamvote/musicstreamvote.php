@@ -93,7 +93,14 @@ class musicstreamvote extends module {
             unlink( $this->mod_dir . 'restart' );
         }
 
-        $this->options = json_decode( file_get_contents( $this->mod_dir . 'options.json.php' ), TRUE );
+        $json = file_get_contents( $this->mod_dir . 'options.json.php' );
+        $json = str_ireplace( "/* <" . "?php exit(); ?" . "> */", '', $json );
+        $this->options = json_decode( $json, TRUE );
+        if ( json_last_error() !=  JSON_ERROR_NONE ) {
+            echo "Can't decode options.json.php: " . $this->json_last_error_msg();
+            exit(1);
+        }
+
         $this->curl['wordpress'] = FALSE;
         $this->curl['streaminfo'] = FALSE;
     }
@@ -586,6 +593,24 @@ class musicstreamvote extends module {
         );
         $this->timers[$timer_name] = 1;
     }
+
+    /**
+     * Convert last json parse error to string
+     * @return string
+     */
+    public static function json_last_error_msg() {
+        static $errors = array(
+            JSON_ERROR_NONE             => null,
+            JSON_ERROR_DEPTH            => 'Maximum stack depth exceeded',
+            JSON_ERROR_STATE_MISMATCH   => 'Underflow or the modes mismatch',
+            JSON_ERROR_CTRL_CHAR        => 'Unexpected control character found',
+            JSON_ERROR_SYNTAX           => 'Syntax error, malformed JSON',
+            JSON_ERROR_UTF8             => 'Malformed UTF-8 characters, possibly incorrectly encoded'
+        );
+        $error = json_last_error();
+        return array_key_exists($error, $errors) ? $errors[$error] : "Unknown error ({$error})";
+    }
+
 }
 
 ?>
