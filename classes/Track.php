@@ -3,6 +3,10 @@ namespace GlumpNet\WordPress\MusicStreamVote;
 
 class Track {
 
+    public static function table_name() {
+        return $wpdb->prefix . PLUGIN_TABLESLUG . '_track';
+    }
+
     public static function create_or_get_id( $stream_title ) {
         global $wpdb;
 
@@ -10,11 +14,10 @@ class Track {
         if ( count( $parts ) < 2 ) { $parts[1] = ''; }
         $track_key = self::key_cleanup( $parts[0] ) . ' - ' . self::key_cleanup( $parts[1] );
 
-        $table_name = $wpdb->prefix . PLUGIN_TABLESLUG . '_track';
         $id = $wpdb->get_var( $wpdb->prepare(
             "
                 SELECT id
-                FROM $table_name
+                FROM " . Track::table_name . "
                 WHERE track_key = %s
             ", 
             $track_key
@@ -22,7 +25,7 @@ class Track {
 
         if ( $id === NULL ) {
             $wpdb->insert( 
-                $table_name, 
+                Track::table_name, 
                 array( 
                     'stream_title' => $stream_title, 
                     'track_key' => $track_key,
@@ -37,39 +40,16 @@ class Track {
         return $id;
     }
 
-    public static function update_count( $track_id ) {
-        global $wpdb;
-
-        $t_track = $wpdb->prefix . PLUGIN_TABLESLUG . '_track';
-        $t_play = $wpdb->prefix . PLUGIN_TABLESLUG . '_play';
-
-        $wpdb->query( $wpdb->prepare(
-            "
-                UPDATE $t_track
-                SET play_count=(
-                  SELECT count(*)
-                  FROM $t_play
-                  WHERE track_id=%d
-                )
-                WHERE id=%d
-            ",
-            $track_id, $track_id
-        ) );
-    }
-
     public static function update_vote( $track_id ) {
         global $wpdb;
 
-        $t_track = $wpdb->prefix . PLUGIN_TABLESLUG . '_track';
-        $t_vote = $wpdb->prefix . PLUGIN_TABLESLUG . '_vote';
-
-        $sql = $wpdb->prepare(
+        $wpdb->query( $wpdb->prepare(
             "
-                UPDATE $t_track t
+                UPDATE ".Track::table_name()." t
                 LEFT JOIN (
                     SELECT track_id, count(id) vote_count,
                     sum(value) vote_total, avg(value) vote_average
-                    FROM $t_vote
+                    FROM ".Vote::table_name()."
                     WHERE track_id=%d AND deleted=0
                 ) v ON v.track_id = t.id
                 SET t.vote_count = v.vote_count,
@@ -78,24 +58,50 @@ class Track {
                 WHERE t.id=%d
             ",
             $track_id, $track_id
-        );
-        file_put_contents( PLUGIN_DIR . 'temp.txt', $sql );
-        $wpdb->query( $sql );
-    }    
+        ) );
+    }
+
+    public static function update_count( $track_id ) {
+        global $wpdb;
+
+        $wpdb->query( $wpdb->prepare(
+            "
+                UPDATE ".Track::table_name()."
+                SET play_count=(
+                  SELECT count(*)
+                  FROM ".Play::table_name()."
+                  WHERE track_id=%d
+                )
+                WHERE id=%d
+            ",
+            $track_id, $track_id
+        ) );
+    }
 
     public static function is_recently_played( $track_id ) {
         global $wpdb;
 
-        $t_play = $wpdb->prefix . PLUGIN_TABLESLUG . '_play';
         $count = $wpdb->get_var( $wpdb->prepare(
             "
-                SELECT count(*) FROM $t_play
+                SELECT count(*) FROM ".Play::table_name()."
                 WHERE track_id=%d
                 AND timestampdiff(minute, time_utc, utc_timestamp()) < 60
             ",
             $track_id
         ) );
         return $count > 0;
+    }
+
+    public static function top_ten_by_vote() {
+        global $wpdb;
+
+        $results = $wpdb->get_results( 
+            "
+                SELECT stream_title, vote_average
+                FROM ".Track::table_name()."
+                ORDER BY vote_average DESC LIMIT 10
+            "
+        );
     }
 
     private static function key_cleanup( $text ) {

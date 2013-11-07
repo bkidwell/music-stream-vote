@@ -55,30 +55,11 @@ class BotService {
     }
 
     private function web_track_start( $args ) {
-        global $wpdb;
-
         $time_utc = $args['time_utc'];  // YYYY-MM-DD HH:MM:SS
         $stream_title = $args['stream_title'];
-
         $track_id = Track::create_or_get_id( $stream_title );
-        $table_name = $wpdb->prefix . PLUGIN_TABLESLUG . '_play';
-        $track_table_name = $wpdb->prefix . PLUGIN_TABLESLUG . '_track';
 
-        $last_title = $wpdb->get_var(
-            "SELECT stream_title FROM $table_name ORDER BY time_utc DESC LIMIT 1"
-        );
-
-        if ( $last_title != $stream_title ) {
-            $wpdb->insert(
-                $table_name,
-                array( 
-                    'time_utc' => $time_utc,
-                    'track_id' => $track_id,
-                    'stream_title' => $stream_title
-                )
-            );
-        }
-
+        Play::new_play( $time_utc, $track_id, $stream_title );
         Track::update_count( $track_id );
 
         file_put_contents(
@@ -116,14 +97,14 @@ class BotService {
     }
 
     private function web_post_vote( $args ) {
-        global $wpdb;
-
         $time_utc = $args['time_utc']; // YYYY-MM-DD HH:MM:SS
         $stream_title = $args['stream_title'];
         $value = $args['value'];
         $nick = $args['nick'];
         $user_id = $args['user_id'];
         $is_authed = $args['is_authed'];
+
+        $opt = Options::get_instance();
 
         if ( is_numeric($value) ) {
             $num = (int) $value;
@@ -136,55 +117,24 @@ class BotService {
         if ( $num === FALSE ) {
             $this->fail(
                 $nick . ': Invalid vote value. Say "' .
-                Options::get_instance()->cmd_help . '" for help.'
+                $opt->cmd_help . '" for help.'
             );
         }
 
         $track_id = Track::create_or_get_id( $stream_title );
-        $table_name = $wpdb->prefix . PLUGIN_TABLESLUG . '_vote';
-
         if ( ! Track::is_recently_played( $track_id ) ) {
             $this->fail( $nick . ': "' . $stream_title . '" wasn\'t played recently!' );
         }
-
-        $vote_id = $wpdb->get_var( $wpdb->prepare(
-            "
-                SELECT id FROM $table_name
-                WHERE track_id=%d
-                AND timestampdiff(minute, time_utc, utc_timestamp()) < 60
-                AND deleted=0
-            ",
-            $track_id
-        ) );
+        $vote_id = Vote::get_recent_id( $track_id, $nick );
 
         if ( $vote_id ) {
-            $wpdb->update(
-                $table_name,
-                array( 
-                    'deleted' => 1
-                ),
-                array(
-                    'id' => $vote_id
-                ),
-                array( '%d' ),
-                array( '%d' )
-            );
-            $txt_vote_response = Options::get_instance()->txt_revote_response;
+            Vote::delete( $vote_id );
+            $txt_vote_response = $opt->txt_revote_response;
         } else {
-            $txt_vote_response = Options::get_instance()->txt_vote_response;
+            $txt_vote_response = $opt->txt_vote_response;
         }
-        $wpdb->insert(
-            $table_name,
-            array( 
-                'time_utc' => $time_utc,
-                'track_id' => $track_id,
-                'stream_title' => $stream_title,
-                'value' => $num,
-                'nick' => $nick,
-                'user_id' => $user_id,
-                'is_authed' => $is_authed
-            ),
-            array( '%s', '%s', '%s', '%d', '%s', '%s', '%d' )
+        Vote::new_vote(
+            $time_utc, $track_id, $stream_title, $num, $nick, $user_id, $is_authed
         );
 
         if ( $num > 0 ) {
@@ -207,64 +157,22 @@ class BotService {
     }
 
     private function web_undo_vote( $args ) {
-        global $wpdb;
-
-        file_put_contents(
-            PLUGIN_DIR . 'temp3.txt',
-            print_r($args, TRUE)
-        );
-
         $nick = $args['nick'];
-
-        $table_name = $wpdb->prefix . PLUGIN_TABLESLUG . '_vote';
-
-        $sql = $wpdb->prepare(
-            "
-                SELECT id, track_id, stream_title, deleted FROM $table_name
-                WHERE nick=%s
-                AND timestampdiff(minute, time_utc, utc_timestamp()) < 10
-                ORDER BY time_utc DESC
-                LIMIT 1
-            ",
-            $nick
-        );
-        file_put_contents(
-            PLUGIN_DIR . 'temp.txt',
-            print_r($sql, TRUE)
-        );
-
-        $vote = $wpdb->get_row( $sql );
-
-        file_put_contents(
-            PLUGIN_DIR . 'temp2.txt',
-            print_r($vote, TRUE)
-        );
+        $vote = Vote::get_undoable_vote( $nick );
 
         if ( $vote == NULL ) {
             $this->fail( $nick . ': Can\'t delete last vote if it is over 10 minutes old.' );
         }
-
         if ( $vote->deleted == 1 ) {
             $this->fail( $nick . ': Your most recent vote has already been deleted.' );
         }
 
-        $wpdb->update(
-            $table_name,
-            array( 
-                'deleted' => 1
-            ),
-            array(
-                'id' => $vote->id
-            ),
-            array( '%d' ),
-            array( '%d' )
-        );
+        Vote::delete( $vote->id );
+        Track::update_vote( $vote->track_id );
 
         $out = str_ireplace( '${stream_title}', $vote->stream_title, Options::get_instance()->txt_unvote_response );
         $out = str_ireplace( '${nick}', $nick, $out );
         $out = str_ireplace( '${value}', $num_txt, $out );
-
-        Track::update_vote( $vote->track_id );
 
         return array(
             'status' => 'ok',
@@ -274,16 +182,7 @@ class BotService {
     }
 
     private function web_stats( $args ) {
-        global $wpdb;
-
-        $table_name = $wpdb->prefix . PLUGIN_TABLESLUG . '_track';
-        $results = $wpdb->get_results( 
-            "
-                SELECT stream_title, vote_average
-                FROM $table_name
-                ORDER BY vote_average DESC LIMIT 10
-            "
-        );
+        $results = Track::top_ten_by_vote();
 
         $n = 1;
         $out = array();
