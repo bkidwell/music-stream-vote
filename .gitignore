@@ -1,5 +1,6 @@
 *.sublime*
 now_playing.txt
+recent_tracks.html
 php-irc-2.2.1/bot.conf.php
 php-irc-2.2.1/modules/musicstreamvote/bootstrap.conf.php
 php-irc-2.2.1/modules/musicstreamvote/options.json.php

@@ -139,13 +139,12 @@ class musicstreamvote extends module {
      * @return boolean
      */
     public function evt_stream_poll() {
-        $this->dbg( 'entering evt_stream_poll()' );
         $data = $this->streaminfo( $this->options['stream_status_url'] );
-        $this->dbg( 'current stream_title: ' . $data['stream_title'] );
 
         if ( $data['stream_title'] != $this->now_playing ) {
             $this->now_playing = $data['stream_title'];
             $this->now_playing_response = '';
+            $this->dbg( 'Now playing: ' . $this->now_playing );
         }
 
         // Try to post 'now playing' to web service on each polling cycle until success
@@ -160,7 +159,6 @@ class musicstreamvote extends module {
             }
         }
 
-        $this->dbg( 'exiting evt_stream_poll()' );
         return TRUE;
     }
 

@@ -14,6 +14,7 @@ class ShortCodes {
      */
     public function __construct() {
         add_shortcode( 'now_playing', array( &$this, 'now_playing' ) );
+        add_shortcode( 'recent_tracks', array( &$this, 'recent_tracks' ) );
         add_action( 'wp_enqueue_scripts', array( &$this, 'add_js' ) );
         add_action( 'wp_head', array( &$this, 'js_vars' ) );
     }
@@ -46,11 +47,26 @@ class ShortCodes {
      * @return string Expanded result
      */
     public function now_playing( $atts ) {
-        if ( file_exists(PLUGIN_DIR . 'now_playing.txt') ) {
+        if ( file_exists( PLUGIN_DIR . 'now_playing.txt' ) ) {
             return
                 '<span class="now-playing">' .
                 esc_html( file_get_contents( PLUGIN_DIR . 'now_playing.txt' ) ) .
                 '</span>';
+        }
+        return '';
+    }
+
+    /**
+     * Expand 'recent_tracks' shortcode.
+     * @param  string[] $atts
+     * @return string
+     */
+    public function recent_tracks( $atts ) {
+        if ( file_exists( PLUGIN_DIR . 'recent_tracks.html') ) {
+            return
+                '<div class="recent-tracks">' .
+                file_get_contents( PLUGIN_DIR . 'recent_tracks.html' ) .
+                '</div>';
         }
         return '';
     }

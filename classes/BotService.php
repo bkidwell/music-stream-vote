@@ -84,6 +84,24 @@ class BotService {
             PLUGIN_DIR . 'now_playing.txt',
             $stream_title
         );
+        $six = Play::recent_six();
+        $out = array();
+        $out[] = "<p><em>Now Playing:</em> " . esc_html($stream_title) . "</p>\n";
+        $out[] = "<p>Previously...<br />";
+        $i = 0;
+        foreach ( $six as $play ) {
+            if ( $i > 0 ) {
+                //$out[] = date( 'H:i:s', $play->time_utc ) . ' UTC: ' .
+                $out[] = $play->time_utc . ' UTC: ' .
+                esc_html( $play->stream_title ) . "<br />\n";
+            }
+            $i++;
+        }
+        $out[] = "</p>";
+        file_put_contents(
+            PLUGIN_DIR . 'recent_tracks.html',
+            implode( $out )
+        );
 
         return array(
             'status' => 'ok',

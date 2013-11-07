@@ -129,7 +129,7 @@ class Track {
 
     /**
      * Get top ten tracks by vote.
-     * @return [type]
+     * @return object[]
      */
     public static function top_ten_by_vote() {
         global $wpdb;

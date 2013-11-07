@@ -31,7 +31,7 @@ class Play {
 
         // Get last track played
         $last_title = $wpdb->get_var(
-            "SELECT stream_title FROM $table_name ORDER BY time_utc DESC LIMIT 1"
+            "SELECT stream_title FROM ".Play::table_name()." ORDER BY time_utc DESC LIMIT 1"
         );
 
         // Only record a new play if stream_title has changed
@@ -45,6 +45,23 @@ class Play {
                 )
             );
         }
+    }
+
+    /**
+     * Now Playing + the last five tracks
+     * @return object[]
+     */
+    public static function recent_six() {
+        global $wpdb;
+
+        return $wpdb->get_results(
+            "
+                SELECT time_utc, stream_title
+                FROM ".Play::table_name()."
+                ORDER BY time_utc DESC
+                LIMIT 6
+            "
+        );
     }
 
 }
