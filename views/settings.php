@@ -70,7 +70,7 @@ namespace GlumpNet\WordPress\MusicStreamVote;
 			<input name="<?php echo PLUGIN_SLUG . '_' . $option_name; ?>"
 			value="<?php echo esc_attr( $value ); ?>" class="<?php echo $input_class; ?>" type="text">
 			<?php else : ?>
-			<textarea name="<?php echo PLUGIN_SLUG . '_' . $key; ?>" class="<?php echo $input_class; ?>"
+			<textarea name="<?php echo PLUGIN_SLUG . '_' . $option_name; ?>" class="<?php echo $input_class; ?>"
 			><?php echo esc_html( $value ); ?></textarea>
 			<?php endif; ?>
 			<p class="description"><?php echo esc_html( $attr['h'] ); ?></p>
