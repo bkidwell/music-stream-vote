@@ -27,11 +27,13 @@ The package 'php5-json' is not installed by default in Ubuntu. Make sure PHP's j
 == To do ==
 
 * Documentation: requirements, install, screenshots
+* Add parameters to shortcodes: how many days back, etc.
 * Implement new voting era time: stats are counted only for events after a chosen time
 * Implement historical stats query
 * Implement cleanup when plugin is uninstalled http://codex.wordpress.org/Function_Reference/register_uninstall_hook
-* Implement options export / import
-* Implement history export / import
+* <del>Implement options export / import</del> -- is this really needed? Probably not.
+* <del>Implement history export / import</del> -- just use phpMyAdmin or equivalent? Don't reinvent the wheel.
+* When displaying a time value in the front-end because of a shortcode-based query, use CLIENT'S local timezone. (Requires some client-side scripting.)
 
 == Changelog ==
 
