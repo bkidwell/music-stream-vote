@@ -249,7 +249,7 @@ class BotService {
         $out = array();
         $out[] = "Top 10 tracks by vote average:   ";
         foreach ( $results as $result ) {
-            $out[] = "<b>#$n</b> $result->stream_title (avg: $result->vote_average)   ";
+            $out[] = "<b>#$n</b> $result->stream_title (score: $result->vote_total)   ";
             if ( $n % 3 == 1 ) { $out[] = "\n"; }
             $n++;
         }

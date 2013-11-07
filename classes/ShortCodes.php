@@ -103,7 +103,7 @@ class ShortCodes {
         $n = 1;
         $out = array();
         foreach ( $top as $result ) {
-            $out[] = "<b>#$n</b> " . esc_html($result->stream_title) . " (avg: $result->vote_average)<br />\n";
+            $out[] = "<b>#$n</b> " . esc_html($result->stream_title) . " (score: $result->vote_total)<br />\n";
             $n++;
         }
         $out[] = "</p>\n";
