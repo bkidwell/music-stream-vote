@@ -138,8 +138,8 @@ class Track {
             "
                 SELECT stream_title, vote_total
                 FROM ".Track::table_name()."
-                WHERE vote_average IS NOT NULL
-                ORDER BY vote_average DESC LIMIT 10
+                WHERE vote_total IS NOT NULL
+                ORDER BY vote_total DESC LIMIT 10
             "
         );
     }
@@ -155,8 +155,8 @@ class Track {
             "
                 SELECT stream_title, vote_total
                 FROM ".Track::table_name()."
-                WHERE vote_average IS NOT NULL
-                ORDER BY vote_average DESC LIMIT 100
+                WHERE vote_total IS NOT NULL
+                ORDER BY vote_total DESC LIMIT 100
             "
         );
     }
