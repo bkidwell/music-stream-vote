@@ -12,7 +12,10 @@ class Track {
 
         $parts = explode( ' - ', $stream_title, 2 );
         if ( count( $parts ) < 2 ) { $parts[1] = ''; }
-        $track_key = self::key_cleanup( $parts[0] ) . ' - ' . self::key_cleanup( $parts[1] );
+        $track_key = substr(
+            self::key_cleanup( $parts[0] ) . ' - ' . self::key_cleanup( $parts[1] ),
+            0, DB_STREAM_TITLE_LEN
+        );
 
         $id = $wpdb->get_var( $wpdb->prepare(
             "
@@ -27,10 +30,10 @@ class Track {
             $wpdb->insert( 
                 Track::table_name, 
                 array( 
-                    'stream_title' => $stream_title, 
+                    'stream_title' => substr( $stream_title, 0, DB_STREAM_TITLE_LEN ) ,
                     'track_key' => $track_key,
-                    'artist' => $parts[0],
-                    'title' => $parts[1]
+                    'artist' => substr( $parts[0], 0, DB_ARTIST_LEN ) ,
+                    'title' => substr( $parts[1], 0, DB_TITLE_LEN )
                 ), 
                 array( '%s', '%s', '%s', '%s')
             );

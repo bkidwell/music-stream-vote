@@ -18,7 +18,7 @@ class Vote {
                 AND timestampdiff(minute, time_utc, utc_timestamp()) < 60
                 AND deleted=0
             ",
-            $track_id, $nick
+            $track_id, substr( $nick, 0, DB_NICK_LEN )
         ) );
     }
 
@@ -33,7 +33,7 @@ class Vote {
                 ORDER BY time_utc DESC
                 LIMIT 1
             ",
-            $nick
+            substr( $nick, 0, DB_NICK_LEN )
         ) );
     }
 
@@ -48,10 +48,10 @@ class Vote {
             array( 
                 'time_utc' => $time_utc,
                 'track_id' => $track_id,
-                'stream_title' => $stream_title,
-                'value' => $num,
-                'nick' => $nick,
-                'user_id' => $user_id,
+                'stream_title' => substr( $stream_title, 0, DB_STREAM_TITLE_LEN ),
+                'value' => $value,
+                'nick' => substr( $nick, 0, DB_NICK_LEN ),
+                'user_id' => substr( $user_id, 0, DB_USER_ID_LEN ),
                 'is_authed' => $is_authed
             ),
             array( '%s', '%s', '%s', '%d', '%s', '%s', '%d' )

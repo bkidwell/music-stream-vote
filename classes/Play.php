@@ -22,7 +22,7 @@ class Play {
                 array( 
                     'time_utc' => $time_utc,
                     'track_id' => $track_id,
-                    'stream_title' => $stream_title
+                    'stream_title' => substr( $stream_title, 0, DB_STREAM_TITLE_LEN )
                 )
             );
         }

@@ -19,6 +19,12 @@ define( __NAMESPACE__ . '\\PLUGIN_SLUG', 'musicstreamvote' );
 define( __NAMESPACE__ . '\\PLUGIN_TABLESLUG', 'musvote' );
 define( __NAMESPACE__ . '\\BOT_DIR', PLUGIN_DIR . 'php-irc-2.2.1/' );
 
+define( __NAMESPACE__ . '\\DB_STREAM_TITLE_LEN', 200 );
+define( __NAMESPACE__ . '\\DB_NICK_LEN', 30 );
+define( __NAMESPACE__ . '\\DB_USER_ID_LEN', 150 );
+define( __NAMESPACE__ . '\\DB_ARTIST_LEN', 100 );
+define( __NAMESPACE__ . '\\DB_TITLE_LEN', 100 );
+
 spl_autoload_register(__NAMESPACE__ . '\\autoload');
 function autoload( $cls ) {
     $c = ltrim( $cls, '\\' ); $l = strlen( __NAMESPACE__ );
