@@ -39,15 +39,6 @@ namespace GlumpNet\WordPress\MusicStreamVote;
 		<p><?php echo $out['start_time']; ?></p>
 	</td>
 	</tr>
-	<th scope="row"><label>Database tables</label></th>
-	<td>
-		<p class="description">Voting tables not created.</p>
-		<p>
-		<a class="button">Create / Reset Tables</a>
-		<a class="button">Delete Tables</a>
-		</p>
-	</td>
-	</tr>
 </tbody></table>
 
 <form name="<?php echo PLUGIN_SLUG; ?>_form" method="post">
