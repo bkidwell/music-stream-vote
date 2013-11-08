@@ -10,8 +10,8 @@ do
 		rm modules/musicstreamvote/restart
 	fi	
 
-	php modules/musicstreamvote/bootstrap.php && \
-	php bot.php bot.conf.php
+	php -d date.timezone=UTC modules/musicstreamvote/bootstrap.php && \
+	php -d date.timezone=UTC bot.php bot.conf.php
 
 	if [ ! -e modules/musicstreamvote/restart ]; then
 		run=0
