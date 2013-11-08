@@ -565,7 +565,9 @@ class musicstreamvote extends module {
             $data['status'] = 'ok';
             $data['error_message'] = '';
             $info = new SimpleXMLElement($data['xml']);
-            $data['stream_title'] = (string) $info->trackList[0]->track[0]->title[0];
+            $data['stream_title'] = $this->decode_bad_html_entities(
+                (string) $info->trackList[0]->track[0]->title[0]
+            );
         }
 
         if ( $data['status'] == 'error' ) {
@@ -598,7 +600,7 @@ class musicstreamvote extends module {
      * Convert last json parse error to string
      * @return string
      */
-    public static function json_last_error_msg() {
+    private static function json_last_error_msg() {
         static $errors = array(
             JSON_ERROR_NONE             => null,
             JSON_ERROR_DEPTH            => 'Maximum stack depth exceeded',
@@ -609,6 +611,31 @@ class musicstreamvote extends module {
         );
         $error = json_last_error();
         return array_key_exists($error, $errors) ? $errors[$error] : "Unknown error ({$error})";
+    }
+
+    /**
+     * Change HTML entities in string to unicode characters
+     *
+     * Finds HTMl entities with decimal numbers and hexidecimal numbers in
+     * input string and turns them into unicode characters. Handles malformed
+     * entity references where "&"" is written as "& amp ;".
+     * 
+     * @param  [type] $text [description]
+     * @return [type]       [description]
+     */
+    private function decode_bad_html_entities( $text ) {
+        // example input: Pajama Parties (&amp;#12497;&amp;#12472;
+        // get it back to HTML entities: Pajama Parties (&#12497;&#12472;
+        $text = preg_replace_callback(
+            '/&amp;(#x{0,1})([\dabcdef]+);/i',
+            function ( $matches) {
+                print_r($matches);
+                return "&$matches[1]$matches[2];";
+            },
+            $text
+        );
+        // decode HTML entities
+        return html_entity_decode($text, ENT_HTML401);
     }
 
 }
