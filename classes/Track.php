@@ -136,7 +136,7 @@ class Track {
 
         return $wpdb->get_results(
             "
-                SELECT stream_title, vote_total
+                SELECT stream_title, vote_total, artist, title
                 FROM ".Track::table_name()."
                 WHERE vote_total IS NOT NULL
                 ORDER BY vote_total DESC LIMIT 10

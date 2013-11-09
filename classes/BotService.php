@@ -247,11 +247,21 @@ class BotService {
 
         $n = 1;
         $out = array();
+        /*
         $out[] = "Top 10 tracks by vote total:   ";
         foreach ( $results as $result ) {
             $out[] = "<b>#$n</b> $result->stream_title (score: $result->vote_total)   ";
             if ( $n % 3 == 1 ) { $out[] = "\n"; }
             $n++;
+        }
+        */
+        // #1 012345678 - 012345678
+        foreach ( $results as $result ) {
+            $out[] = "#$n ";
+            // $out[] = substr($result->artist, 0, 9);
+            // $out[] = " - ";
+            $out[] = substr($result->title, 0, 21);
+            $out[] = " ";
         }
 
         return array(
@@ -267,12 +277,12 @@ class BotService {
      * @return void
      */
     private function fail( $message ) {
-    	$result = array(
-    		'status' => 'error',
-    		'error_message' => $message
-    	);
-    	echo json_encode( $result );
-    	exit;
+        $result = array(
+            'status' => 'error',
+            'error_message' => $message
+        );
+        echo json_encode( $result );
+        exit;
     }
 
 /*
