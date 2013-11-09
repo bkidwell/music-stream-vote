@@ -436,7 +436,7 @@ class musicstreamvote extends module {
             $text
         );
         foreach ( explode( "\n", $text ) as $output_line ) {
-            $this->ircClass->privMsg($to, $output_line, $queue = 1);
+            $this->ircClass->notice($to, $output_line, $queue = 1);
         }
     }
 
@@ -459,7 +459,7 @@ class musicstreamvote extends module {
                         $key, $output_line, $queue = 1
                     );
                 } else {
-                    $this->ircClass->privMsg(
+                    $this->ircClass->notice(
                         $key, $output_line, $queue = 1
                     );
                 }
@@ -572,7 +572,7 @@ class musicstreamvote extends module {
 
         if ( $data['status'] == 'error' ) {
             foreach ( $this->in_channels as $key => $value ) {
-                $this->ircClass->privMsg(
+                $this->ircClass->notice(
                     $key, "\02Error:\017 " . $data['error_message'], $queue = 1
                 );
             }
