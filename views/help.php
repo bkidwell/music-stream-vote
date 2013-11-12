@@ -17,11 +17,8 @@ namespace GlumpNet\WordPress\MusicStreamVote;
 
 <p>
 <a href="<?php echo $_SERVER['SCRIPT_NAME']; ?>?page=<?php echo PLUGIN_SLUG; ?>">&larr; Back to Settings</a>
-&nbsp; Help pages:&nbsp;
-<?php foreach ( $pages as $i ): ?>
-<a href="<?php echo $_SERVER['SCRIPT_NAME']; ?>?page=<?php echo PLUGIN_SLUG; ?>&help=<?php echo $i[0]; ?>"><?php
-echo esc_html($i[1]); ?></a>&nbsp;
-<?php endforeach; ?></p>
+&nbsp; Help pages:&nbsp; <?php echo $this->get_page_list(); ?>
+</p>
 
 <?php echo $html ?>
 

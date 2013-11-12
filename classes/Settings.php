@@ -10,15 +10,51 @@ namespace GlumpNet\WordPress\MusicStreamVote;
  */
 class Settings {
     /**
+     * WordPress internal ID of our admin screen
+     * @var string
+     */
+    private $screen_id;
+
+    /**
      * Add display_settings() to admin screen.
      */
-    function __construct() {
+    public function __construct() {
         add_action('admin_menu', function() {
-        	add_options_page(
+        	$this->screen_id = add_options_page(
         		PLUGIN_NAME, PLUGIN_NAME, 'manage_options',
         		PLUGIN_SLUG, array( &$this, 'display_settings' )
     		);
         });
+
+        add_filter( 'contextual_help', array( &$this, 'help' ), 10, 3 );
+    }
+
+    /**
+     * Display help box at the top of the Settings screen
+     * @param  string $contextual_help Help text
+     * @param  string $screen_id Screen ID of help being rendered now
+     * @param  mixed $screen
+     * @return string $contextual_help unchanged if not our screen; else help text
+     */
+    public function help( $contextual_help, $screen_id, $screen ) {
+        if ( $screen_id != $this->screen_id ) {
+            return $contextual_help;
+        }
+
+        $h = Help::get_instance();
+        $pages = $h->get_contextual_pages();
+        $tabs = [];
+        $i = 0;
+        foreach ( $pages as $page ) {
+            $screen->add_help_tab( array(
+                'id' => "help_tab_$i",
+                'title' => $page[1],
+                'content' => $h->render( 'contextual_help/' . $page[0], TRUE )
+            ) );
+            $i++;
+        }
+
+        $screen->set_help_sidebar( $h->render( 'contextual_help/sidebar', TRUE ) );
     }
 
     /**
@@ -27,7 +63,7 @@ class Settings {
      */
     function display_settings() {
         if ( isset( $_GET['help'] ) ) {
-            (new Help)->render();
+            Help::get_instance()->render();
             return;
         }
 
