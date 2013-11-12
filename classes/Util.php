@@ -51,4 +51,16 @@ class Util {
         stripslashes_array($_REQUEST);
         stripslashes_array($_COOKIE);
     }
+
+    /**
+     * Get a 'slug' for a given string
+     */
+    function get_slug( $text ) {
+        $text = preg_replace(
+            ['/[^\w ]/', '/ /'],
+            ['', '_'],
+            $text
+        );
+        return strtolower( $text );
+    }
 }

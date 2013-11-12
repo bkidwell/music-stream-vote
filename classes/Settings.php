@@ -27,6 +27,18 @@ class Settings {
         });
 
         add_filter( 'contextual_help', array( &$this, 'help' ), 10, 3 );
+        add_action( 'admin_enqueue_scripts', array( &$this, 'js' ) );
+    }
+
+    /**
+     * Load JavaScript for admin screen
+     * @return void
+     */
+    public function js() {
+        if ( $_GET['page'] != PLUGIN_SLUG ) {
+            return;
+        }
+        wp_enqueue_script( PLUGIN_SLUG . '_js', PLUGIN_URL . 'js/settings.js' );
     }
 
     /**
