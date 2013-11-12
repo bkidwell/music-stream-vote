@@ -61,9 +61,13 @@ define( __NAMESPACE__ . '\\DB_ARTIST_LEN', 100 );
  */
 define( __NAMESPACE__ . '\\DB_TITLE_LEN', 100 );
 /**
- * Database schema version
+ * Max length in DB for comment
  */
-define( __NAMESPACE__ . '\\DB_VERSION', 1 );
+define( __NAMESPACE__ . '\\DB_COMMENT_LEN', 200 );
+/**
+ * Database schema version -- increment this every time you change Db::update_schema() .
+ */
+define( __NAMESPACE__ . '\\DB_VERSION', 2 );
 
 spl_autoload_register( __NAMESPACE__ . '\\autoload' );
 /**

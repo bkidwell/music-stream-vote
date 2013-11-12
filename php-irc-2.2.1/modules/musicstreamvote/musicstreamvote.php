@@ -365,7 +365,7 @@ class musicstreamvote extends module {
      * @return void
      */
     public function cmd_like( $line, $args ) {
-        $args['query'] = '+3';
+        $args['query'] = trim( '+3 ' . $args['query'] );
         $this->cmd_vote( $line, $args );
     }
 
@@ -379,7 +379,7 @@ class musicstreamvote extends module {
      * @return void
      */
     public function cmd_hate( $line, $args ) {
-        $args['query'] = '-3';
+        $args['query'] = trim( '-3 ' . $args['query'] );
         $this->cmd_vote( $line, $args );
     }
 

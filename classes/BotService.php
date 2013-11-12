@@ -150,10 +150,17 @@ class BotService {
     private function web_post_vote( $args ) {
         $time_utc = $args['time_utc']; // YYYY-MM-DD HH:MM:SS
         $stream_title = $args['stream_title'];
-        $value = str_replace( ['[', ']', '{', '}', '"', '\''], '', $args['value'] );
         $nick = $args['nick'];
         $user_id = $args['user_id'];
         $is_authed = $args['is_authed'];
+
+        $value_parts = explode( ' ', $args['value'], 2 );
+        $value = str_replace( ['[', ']', '{', '}', '"', '\''], '', $value_parts[0] );
+        if ( count( $value_parts) == 1 ){
+            $comment = '';
+        } else {
+            $comment = $value_parts[1];
+        }
 
         $opt = Options::get_instance();
 
@@ -185,7 +192,7 @@ class BotService {
             $txt_vote_response = $opt->txt_vote_response;
         }
         Vote::new_vote(
-            $time_utc, $track_id, $stream_title, $num, $nick, $user_id, $is_authed
+            $time_utc, $track_id, $stream_title, $num, $nick, $user_id, $is_authed, $comment
         );
 
         if ( $num > 0 ) {

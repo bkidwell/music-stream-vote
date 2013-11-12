@@ -72,23 +72,27 @@ class Vote {
      * @return void
      */
     public static function new_vote(
-        $time_utc, $track_id, $stream_title, $value, $nick, $user_id, $is_authed
+        $time_utc, $track_id, $stream_title, $value, $nick, $user_id, $is_authed, $comment
     ) {
         global $wpdb;
 
-        $wpdb->insert(
-            Vote::table_name(),
-            array( 
-                'time_utc' => $time_utc,
-                'track_id' => $track_id,
-                'stream_title' => substr( $stream_title, 0, DB_STREAM_TITLE_LEN ),
-                'value' => $value,
-                'nick' => substr( $nick, 0, DB_NICK_LEN ),
-                'user_id' => substr( $user_id, 0, DB_USER_ID_LEN ),
-                'is_authed' => $is_authed
-            ),
-            array( '%s', '%s', '%s', '%d', '%s', '%s', '%d' )
+        $values = array( 
+            'time_utc' => $time_utc,
+            'track_id' => $track_id,
+            'stream_title' => substr( $stream_title, 0, DB_STREAM_TITLE_LEN ),
+            'value' => $value,
+            'nick' => substr( $nick, 0, DB_NICK_LEN ),
+            'user_id' => substr( $user_id, 0, DB_USER_ID_LEN ),
+            'is_authed' => $is_authed
         );
+        $formats = array( '%s', '%s', '%s', '%d', '%s', '%s', '%d' );
+
+        if ( $comment !== '' ) {
+            $values['comment'] = substr( $comment, 0, DB_COMMENT_LEN );
+            $formats[] = '%s';
+        }
+
+        $wpdb->insert( Vote::table_name(), $values, $formats );
     }
 
     /**

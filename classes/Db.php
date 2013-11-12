@@ -69,6 +69,7 @@ class Db {
             user_id varchar(150) NOT NULL,
             is_authed bit(1) NOT NULL,
             deleted tinyint(4) NOT NULL DEFAULT '0',
+            comment varchar(200) NULL,
             PRIMARY KEY (id),
             KEY (track_id),
             KEY (time_utc),
