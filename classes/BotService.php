@@ -262,6 +262,7 @@ class BotService {
             // $out[] = " - ";
             $out[] = substr($result->title, 0, 21);
             $out[] = " ";
+            $n++;
         }
 
         return array(
