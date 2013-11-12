@@ -150,7 +150,7 @@ class BotService {
     private function web_post_vote( $args ) {
         $time_utc = $args['time_utc']; // YYYY-MM-DD HH:MM:SS
         $stream_title = $args['stream_title'];
-        $value = str_replace( ['[', ']', '{', '}', '"', '\''], '', $value );
+        $value = str_replace( ['[', ']', '{', '}', '"', '\''], '', $args['value'] );
         $nick = $args['nick'];
         $user_id = $args['user_id'];
         $is_authed = $args['is_authed'];

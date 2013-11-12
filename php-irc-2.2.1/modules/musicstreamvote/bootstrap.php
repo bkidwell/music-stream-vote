@@ -132,6 +132,11 @@ foreach ( $commands as $command ) {
     $aliases = explode( ' ', $options['cmd_' . $command] );
     foreach ( $aliases as $alias ) {
         $out[] = "priv\t$alias \ttrue\ttrue\tfalse\t0\tmusicstreamvote\tcmd_$command\n";
+        if ( $command == 'vote' ) {
+            for ( $i = -5; $i < 6; $i++ ) {
+                $out[] = "priv\t$alias$i \ttrue\ttrue\tfalse\t0\tmusicstreamvote\tcmd_shortvote\n";
+            }
+        }
     }
 }
 file_put_contents( MOD_DIR . 'musicstreamvote.conf', $out );

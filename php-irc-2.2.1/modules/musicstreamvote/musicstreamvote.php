@@ -387,6 +387,23 @@ class musicstreamvote extends module {
     }
 
     /**
+     * Vote shortcut -- allow missing space after vote command
+     *
+     * Invoked by the framework.
+     * 
+     * @param  string[] $line
+     * @param  string[] $args
+     * @return void
+     */
+    public function cmd_shortvote( $line, $args ) {
+        $value = preg_replace( '/[^\d\.\-]/', '', $args['cmd'] );
+        $args['query'] = trim( $value . ' ' . $args['query'] );
+        echo "!!! cmd_shortvote\n";
+        print_r($args);
+        $this->cmd_vote( $line, $args );
+    }
+
+    /**
      * Get top ten tracks by vote sum from WordPress.
      *
      * Invoked by the framework.
