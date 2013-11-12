@@ -155,6 +155,11 @@ class BotService {
         $user_id = $args['user_id'];
         $is_authed = $args['is_authed'];
 
+        $value = str_replace(
+            ['[', ']', '{', '}', '"', '\''],
+            '', $value
+        );
+
         $opt = Options::get_instance();
 
         if ( is_numeric($value) ) {
