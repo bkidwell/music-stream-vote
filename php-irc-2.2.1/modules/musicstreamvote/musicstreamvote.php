@@ -253,7 +253,7 @@ class musicstreamvote extends module {
             'nick' => $line['fromNick'],
         ), $line );
         if ( $response['output'] ) {
-            $this->reply( $line, $response['output'] );
+            $this->reply( $line, $response['output'], $response['private'] );
         }
     }
 
@@ -269,7 +269,7 @@ class musicstreamvote extends module {
     public function cmd_help( $line, $args ) {
         $response = $this->webservice( 'help', array(), $line );
         if ( $response['output'] ) {
-            $this->reply( $line, $response['output'] );
+            $this->reply( $line, $response['output'], $response['private'] );
         }
     }
 
@@ -284,7 +284,7 @@ class musicstreamvote extends module {
      */
     public function cmd_nowplaying( $line, $args ) {
         if ( $this->now_playing_response ) {
-            $this->reply( $line, $this->now_playing_response );
+            $this->reply( $line, $this->now_playing_response, $this->options['now_playing_response_private'] );
         }
     }
 
@@ -332,7 +332,7 @@ class musicstreamvote extends module {
             'is_authed' => $vote['is_authed'],
         ), $line );
         if ( $response['output'] ) {
-            $this->reply( $line, $response['output'] );
+            $this->reply( $line, $response['output'], $response['private'] );
         }
         unset($this->pending_votes[$subject]);
     }
@@ -351,7 +351,7 @@ class musicstreamvote extends module {
             'nick' => $line['fromNick'],
         ), $line );
         if ( $response['output'] ) {
-            $this->reply( $line, $response['output'] );
+            $this->reply( $line, $response['output'], $response['private'] );
         }
     }
 
@@ -410,7 +410,7 @@ class musicstreamvote extends module {
     public function cmd_stats( $line, $args ) {
         $response = $this->webservice( 'stats', array(), $line );
         if ( $response['output'] ) {
-            $this->reply( $line, $response['output'] );
+            $this->reply( $line, $response['output'], $response['private'] );
         }
     }
 
@@ -436,8 +436,8 @@ class musicstreamvote extends module {
      * @param  string $text what to say
      * @return void
      */
-    private function reply( $line, $text ) {
-        if ( $line['to'] == $this->options['irc_nick'] ) {
+    private function reply( $line, $text, $force_private = FALSE ) {
+        if ( $line['to'] == $this->options['irc_nick'] || $force_private ) {
             $to = $line['fromNick'];
         } else {
             $to = $line['to'];
@@ -448,7 +448,11 @@ class musicstreamvote extends module {
             $text
         );
         foreach ( explode( "\n", $text ) as $output_line ) {
-            $this->ircClass->notice($to, $output_line, $queue = 1);
+            if ( $to == $line['fromNick'] ) {
+                $this->ircClass->privMsg($to, $output_line, $queue = 1);    
+            } else {
+                $this->ircClass->notice($to, $output_line, $queue = 1);
+            }
         }
     }
 

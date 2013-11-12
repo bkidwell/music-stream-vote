@@ -92,7 +92,11 @@ class Settings {
     	if ( $_POST[PLUGIN_SLUG . '_o'] == '1' ) {
             Util::fix_wp_slashes();
             foreach ( $opt->get_option_names() as $key ) {
-                $opt->__set( $key, $_POST[PLUGIN_SLUG . '_' . $key] );
+                if ( substr( $key, -7 ) == '_switch' ) {
+                    $opt->__set( $key, ($_POST[PLUGIN_SLUG . '_' . $key] == '1') ? '1' : '0' );
+                } else {
+                    $opt->__set( $key, $_POST[PLUGIN_SLUG . '_' . $key] );
+                }
             }
             $opt->save();
             if ( $opt->need_restart ) {

@@ -120,8 +120,11 @@ file_put_contents( BOT_DIR . 'bot.conf.php', $out );
 // MOD_DIR/musicstreamvote.conf file
 
 foreach ( $options as $k => $v ) {
-    if ( substr( $k, 0, 4 ) == 'cmd_' ) {
-        $commands[] = substr( $k, 4 );
+    if ( substr( $k, 0, 4 ) == 'cmd_' && substr( $k, -7 ) != '_switch' ) {
+        // skip disabled commands
+        if ( $options[$k . '_switch'] == '1' ) {
+            $commands[] = substr( $k, 4 );
+        }
     }
 }
 $out = array();

@@ -24,6 +24,10 @@ h2.nav-tab-wrapper.msv-tabs .nav-tab {
 }
 div.tab-content { display: none; }
 div.tab-content.tab-content-active { display: inherit; }
+.form-table th {
+	font-weight: bold;
+	/* border-bottom: 1px solid Silver; */
+}
 </style>
 
 <div class="wrap">
@@ -32,9 +36,9 @@ div.tab-content.tab-content-active { display: inherit; }
 <?php screen_icon(); ?>
 <h2 class="nav-tab-wrapper msv-tabs">
 <?php echo esc_html( PLUGIN_NAME ); ?><br />
-<a class="nav-tab nav-tab-active" href="#tab_status">Status</a>
+<a class="nav-tab nav-tab-active" href="#tab_status" id="tab_status">Status</a>
 <?php foreach ( $option_defs as $group_name => $defs ) : ?>
-<a class="nav-tab" href="#tab_<?php echo Util::get_slug( $group_name ); ?>"><?php echo esc_html( $group_name ); ?></a>
+<a class="nav-tab" href="#tab_<?php echo Util::get_slug( $group_name ); ?>" id="tab_<?php echo Util::get_slug( $group_name ); ?>"><?php echo esc_html( $group_name ); ?></a>
 <?php endforeach; ?>
 </h2>
 
@@ -47,10 +51,9 @@ div.tab-content.tab-content-active { display: inherit; }
 <?php endif; ?>
 
 <div class="tab-content tab-content-active" id="tabc_status">
-<h3 class="title">Status</h3>
 <table class="form-table"><tbody>
 	<tr valign="top">
-	<th scope="row"><label>Bot startup time</label></th>
+	<td><label>Bot startup time</label></td>
 	<td>
 		<p><?php echo $out['start_time']; ?></p>
 	</td>
@@ -67,11 +70,28 @@ foreach ( $option_defs as $group_name => $defs ) : ?>
 
 	<div class="tab-content" id="tabc_<?php echo Util::get_slug( $group_name ); ?>">
 
-	<h3 class="title"><?php echo $group_name; ?></h3>
-	<table class="form-table"><tbody>
+	<table class="form-table">
+	<?php if ( $group_name == 'Commands' ) : ?>
+		<thead><tr>
+			<th></th><th>Command Name</th><th>Enabled</th>
+		</tr></thead>
+	<?php elseif ( $group_name == 'Responses' ) : ?>
+		<thead><tr>
+			<th></th><th>Text</th><th>Reply to</th>
+		</tr></thead>
+	<?php endif; ?>
+	<tbody>
 
 	<?php
 	foreach ( $defs as $option_name => $attr ) :
+
+	if ( substr( $option_name, -7 ) == '_switch' ) { continue; }
+
+	if ( $group_name == 'Commands' || $group_name == 'Responses' ) {
+		$switch = $opt->__get( $option_name . '_switch' );
+		$chk0 = ( $switch == '0' ) ? ' checked="checked"' : '';
+		$chk1 = ( $switch == '1' ) ? ' checked="checked"' : '';
+	}
 
 	$is_textarea = $attr['c'] == 'msv-input-tall';
 	$input_class = trim( 'regular-text ' . $attr['c'] );
@@ -79,9 +99,9 @@ foreach ( $option_defs as $group_name => $defs ) : ?>
 	?>
 
 	<tr valign="top">
-	<th scope="row">
+	<td>
 		<label for="<?php echo PLUGIN_SLUG . '_' . $option_name; ?>"><?php echo $attr['t']; ?></label>
-	</th>
+	</td>
 	<td>
 		<?php if ( !$is_textarea ) : ?>
 		<input name="<?php echo PLUGIN_SLUG . '_' . $option_name; ?>"
@@ -92,6 +112,25 @@ foreach ( $option_defs as $group_name => $defs ) : ?>
 		<?php endif; ?>
 		<p class="description"><?php echo esc_html( $attr['h'] ); ?></p>
 	</td>
+	<?php if ( $group_name == 'Commands' ) : ?>
+		<td>
+		<label>
+		<input name="<?php echo PLUGIN_SLUG . '_' . $option_name; ?>_switch" id="<?php echo PLUGIN_SLUG . '_' . $option_name; ?>_enabled" value="1" type="checkbox"<?php echo $chk1; ?>/>
+		Enabled</label>
+		</td>
+	<?php elseif ( $group_name == 'Responses' ) : ?>
+		<td>
+		<fieldset><legend class="screen-reader-text">Reply to</legend>
+		<label>
+		<input class="tog" type="radio" value="0" name="<?php echo PLUGIN_SLUG . '_' . $option_name; ?>_switch"<?php echo $chk0; ?>></input>
+		Same context
+		</label><br />
+		<label>
+		<input class="tog" type="radio" value="1" name="<?php echo PLUGIN_SLUG . '_' . $option_name; ?>_switch"<?php echo $chk1; ?>></input>
+		Sender
+		</label>
+		</td>
+	<?php endif; ?>
 	</tr>
 
 	<?php

@@ -128,10 +128,10 @@ class Track {
     }
 
     /**
-     * Get top ten tracks by vote.
+     * Get top n stats for IRC
      * @return object[]
      */
-    public static function top_ten_by_vote() {
+    public static function irc_stats( $limit ) {
         global $wpdb;
 
         return $wpdb->get_results(
@@ -139,7 +139,7 @@ class Track {
                 SELECT stream_title, vote_total, artist, title
                 FROM ".Track::table_name()."
                 WHERE vote_total IS NOT NULL
-                ORDER BY vote_total DESC LIMIT 10
+                ORDER BY vote_total DESC LIMIT $limit
             "
         );
     }
