@@ -339,7 +339,7 @@ public static $option_defs = array(
 'Miscellaneous' => array(
 
     'restart_poll_interval_sec' => array(
-        't' => 'Bot restart file polling interval',
+        't' => 'Bot restart file polling interval (seconds)',
         'h' => 'Only for when WordPress and the bot are on the same host.',
         'c' => '',
         'd' => '10',
