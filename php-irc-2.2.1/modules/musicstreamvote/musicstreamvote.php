@@ -249,7 +249,6 @@ class musicstreamvote extends module {
      * @return void
      */
     private function evt_sayhi( $line, $args ) {
-        print_r($line);
         $response = $this->webservice( 'sayhi', array(
             'nick' => $line['fromNick'],
         ), $line );
@@ -324,7 +323,6 @@ class musicstreamvote extends module {
     public function cmd_vote_finish( $subject ) {
         $vote = $this->pending_votes[$subject];
         $line = $vote['line'];
-        $this->dbg("Continuing vote for $subject.");
         $response = $this->webservice( 'post_vote', array(
             'time_utc' => $vote['time_utc'],
             'stream_title' => $vote['stream_title'],
@@ -352,7 +350,6 @@ class musicstreamvote extends module {
         $response = $this->webservice( 'undo_vote', array(
             'nick' => $line['fromNick'],
         ), $line );
-        print_r($response);
         if ( $response['output'] ) {
             $this->reply( $line, $response['output'] );
         }
@@ -398,8 +395,6 @@ class musicstreamvote extends module {
     public function cmd_shortvote( $line, $args ) {
         $value = preg_replace( '/[^\d\.\-]/', '', $args['cmd'] );
         $args['query'] = trim( $value . ' ' . $args['query'] );
-        echo "!!! cmd_shortvote\n";
-        print_r($args);
         $this->cmd_vote( $line, $args );
     }
 
