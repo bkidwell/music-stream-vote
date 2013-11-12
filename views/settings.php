@@ -17,8 +17,10 @@ namespace GlumpNet\WordPress\MusicStreamVote;
 
 <div class="wrap">
 
-<div id="icon-options-general" class="icon32"><br></br></div>
+<?php screen_icon(); ?>
 <?php echo "<h2>" . PLUGIN_NAME . "</h2>"; ?>
+
+<p><a href="<?php echo $_SERVER['SCRIPT_NAME']; ?>?page=<?php echo PLUGIN_SLUG; ?>&help=README">Help</a></p>
 
 <p><em>To change a setting back to its default, clear it out and save.</em></p>
 

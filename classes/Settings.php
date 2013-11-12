@@ -26,6 +26,11 @@ class Settings {
      * @return void
      */
     function display_settings() {
+        if ( isset( $_GET['help'] ) ) {
+            (new Help)->render();
+            return;
+        }
+
     	$opt = Options::get_instance();
         $state = State::get_instance();
     	$opt_saved = FALSE;
