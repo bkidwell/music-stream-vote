@@ -322,9 +322,9 @@ public static $option_defs = array(
 
     'txt_stats' => array(
         't' => 'Stats',
-        'h' => 'Example: ${begin_repeat,10}#${num} ${title}${end_repeat}. Other variables: ${artist}, ${stream_title}. <em>Note: the output will be limited to 255 characters</em>',
+        'h' => 'Example: ${begin_repeat,10}#${num} ${title,21}${end_repeat}. Other variables: ${artist,CHARS}, ${stream_title,CHARS}. <em>Note: the output will be limited to 255 characters</em>',
         'c' => 'msv-input-wide',
-        'd' => '${begin_repeat,10}#${num} ${title}${end_repeat}',
+        'd' => '${begin_repeat,10}#${num} ${title,21}${end_repeat}',
         'r' => FALSE,
     ),
     'txt_stats_switch' => array(
