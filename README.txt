@@ -26,5 +26,8 @@ The package 'php5-json' is not installed by default in Ubuntu. Make sure PHP's j
 
 == Changelog ==
 
+= 1.1 =
+* In progress...
+
 = 1.0 =
 * Initial release.
