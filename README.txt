@@ -37,7 +37,16 @@ See [full documentation](https://github.com/bkidwell/music-stream-vote/tree/mast
 == Changelog ==
 
 = 1.1 =
-* In progress...
+* First stable release.
+* Abbreviated "!stats" output in chat room to cut down on getting kicked by channel minder bot.
+* Changed channel messages from the bot from PRIVMSG to NOTICE message type. Clients should/may color these message differently and skip NOTICEs when notifying the user that someone has talked.
+* Added documentation -- viewable in GitHub, in the source code, or inside the WordPress plugin's Settings screen.
+* Allow voting with no space between the vote command and the vote value (shortcut).
+* Allow the vote value to be surrounded by brackets, quotation marks, or whatever -- to avoid user confusion.
+* Allow extra input after the vote value; stored as comment in the vote table in the database for future enhancements.
+* Added tabs (sections) to the Settings screen for usability.
+* Allow IRC bot commands to enabled and disabled individually in the Settings screen. (For example, you may want to disable "!stats".)
+* Allow IRC bot responses to be always sent as a private message reply instead of to the channel, to avoid getting to chatty in the main channel during peak hours. Configurable in the Settings screen, seperate option per response type.
 
 = 1.0 =
 * Initial release.
