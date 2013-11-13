@@ -282,7 +282,7 @@ public static $option_defs = array(
         'd' => '<b>${nick}</b> voted ${value} for ${stream_title}.',
         'r' => FALSE,
     ),
-    'txt_vote_switch' => array(
+    'txt_vote_response_switch' => array(
         't' => 'Vote private reply',
         'h' => '',
         'c' => '',
@@ -297,7 +297,7 @@ public static $option_defs = array(
         'd' => '<b>${nick}</b> changed vote to ${value} for ${stream_title}.',
         'r' => FALSE,
     ),
-    'txt_revote_switch' => array(
+    'txt_revote_response_switch' => array(
         't' => 'Re-Vote private reply',
         'h' => '',
         'c' => '',
@@ -312,7 +312,7 @@ public static $option_defs = array(
         'd' => '<b>${nick}</b> undid a vote for ${stream_title}.',
         'r' => FALSE,
     ),
-    'txt_unvote_switch' => array(
+    'txt_unvote_response_switch' => array(
         't' => 'Unvote private reply',
         'h' => '',
         'c' => '',
