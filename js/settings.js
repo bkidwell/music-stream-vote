@@ -1,6 +1,12 @@
 jQuery(document).ready(function($) {
-	var tabs = $( '.nav-tab' );
+	window.setTimeout( function() {
+		$( '.updated' ).slideUp();
+	}, 5000	);
+
+	var tabs = $( '.msv-tabs .nav-tab' );
 	var tabc = $( '.tab-content' );
+
+	if ( tabs.length == 0 ) { return; }
 
 	var goto_id = function ( id ) {
 		var target = $('#tab_' + id);
@@ -21,8 +27,4 @@ jQuery(document).ready(function($) {
 		var id = ('' + location.hash).substring( 5 );
 		goto_id( id );
 	}
-
-	window.setTimeout( function() {
-		$( '.updated' ).slideUp();
-	}, 5000	);
 });

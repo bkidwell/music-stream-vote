@@ -59,7 +59,7 @@ class Help {
        
         $this->pages = [
             ['README', 'Readme'],
-            ['page2', 'Page 2'],
+            ['INSTALL', 'Installation'],
         ];
         $this->contextual_pages = [
             ['overview', 'Overview'],
