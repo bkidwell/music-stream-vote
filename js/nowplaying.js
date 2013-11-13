@@ -14,8 +14,8 @@ jQuery(document).ready(function($) {
 					} );
 				}
 			}
+			window.setTimeout( loadNowPlaying, 10000 );
 		} );
-		window.setTimeout( loadNowPlaying, 10000 );
 	};
 
 	// only do "now playing" polling if there is a "now playing" shortcode onscreen
