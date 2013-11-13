@@ -61,12 +61,12 @@ class Settings {
             $screen->add_help_tab( array(
                 'id' => "help_tab_$i",
                 'title' => $page[1],
-                'content' => $h->render( 'contextual_help/' . $page[0], TRUE )
+                'content' => $h->render( $page[0], TRUE )
             ) );
             $i++;
         }
 
-        $screen->set_help_sidebar( $h->render( 'contextual_help/sidebar', TRUE ) );
+        $screen->set_help_sidebar( $h->render( 'contextual_help_sidebar', TRUE ) );
     }
 
     /**

@@ -60,10 +60,15 @@ class Help {
         $this->pages = [
             ['README', 'Readme'],
             ['INSTALL', 'Installation'],
+            ['HACKING', 'Hacking'],
+            ['shortcodes', 'Shortcodes'],
+            ['viewing_historical_data', 'Viewing Historical Data'],
+            ['../LICENSE', 'License'],
         ];
         $this->contextual_pages = [
             ['overview', 'Overview'],
-            ['../../LICENSE', 'License'],
+            ['shortcodes', 'Shortcodes'],
+            ['../LICENSE', 'License'],
         ];
     }
 

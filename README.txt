@@ -1,28 +1,38 @@
 === Music Stream Vote ===
-Contributors: bkidwell@github
-Donate link: http://rynothebearded.com/
+Contributors: bkidwell
+Donate link: http://www.glump.net
 Tags: IceCast, music, radio, IRC, bot, vote, top-ten
 Requires at least: 3.6.0
-Tested up to: 3.7.0
+Tested up to: 3.7.1
 Stable tag: master
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
-UNFINISHED! Collects and displays votes for the track currently playing on your IceCast music radio station. Votes are collected via a bot in your station's IRC channel. Current stats can be shown in WordPress or in IRC.
+*Music Stream Vote* is an application for collecting votes on the currently playing track on any Internet radio station running Icecast that has an IRC chat room and a WordPress web site.
 
 == Description ==
 
-When complete, this plugin will host a voting backend to collect votes for what is now playing on an IceCast Internet radio station. Votes will be collected via an embedded IRC bot in the ./bot folder of the plugin (not implemented yet) and stored in custom MySQL tables in the WordPress installation's MySQL database.
+Features:
 
-It is assumed that most interaction between the radio station and the users happens in an IRC channel, so this is where voting will happen. (We may add the ability to vote via the WordPress site as well, but for now we are focusing on IRC's authentication and abuse-prevention mechanisms to keep it simple.) The IRC bot will be fairly dumb, only relaying vote request and responses to the WordPress backend and allowing "current top ten" queries. The IRC bot will also take the task of polling the IceCast stream's XML status file to create "new track start" events.
+* Poll IceCast ``.xspf`` URL for name of currently playing track every *n* seconds.
+* Announce track changes in an IRC chat room and post them to WordPress.
+* Allow chat room users to post votes from -5 to +5 on each played track. (One vote per person per play, undoable and changeable.)
+* Configurable IRC commands and responses (enable, disable, change response text) for "Say hi", "Help", "Vote", "Unvote", "Now Playing", and "Stats".
+* Report Top 10 tracks in chat room.
+* Report Top 100 tracks and last 24 hours of play on web site.
 
-WordPress widgets and shortcodes will be provided to display current top n lists like "most played", "highest voted", etc.
+See [full documentation](https://github.com/bkidwell/music-stream-vote/tree/master/docs) on the [GitHub project page](https://github.com/bkidwell/music-stream-vote) .
 
 == Requirements ==
 
-Requires PHP 5.4.
-
-The package 'php5-json' is not installed by default in Ubuntu. Make sure PHP's json library is installed in your OS.
+* An Internet radio station running software like IceCast that provides a "Now Playing" [XSPF](https://en.wikipedia.org/wiki/XML_Shareable_Playlist_Format) file at a static URL.
+* An IRC chat room where you have *permission* to run a bot.
+* A WordPress web site.
+    * PHP 5.4+ (WordPress requires 5.2.4 but Music Stream Vote requires 5.4).
+    * MySQL 5.0+.
+* A host to run the IRC bot -- preferably the same as the WordPress site, but not necessarily.
+    * PHP 5.4+
+    * Linux or a Unix OS on the bot host. Not a strict requirement, but at the moment the control script and instructions will require some expertise to adapt it to Windows.
 
 == Changelog ==
 

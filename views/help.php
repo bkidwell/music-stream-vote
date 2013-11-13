@@ -28,6 +28,9 @@ div.msv-help ol {
 div.msv-help li {
     margin: .5em 0;
 }
+div.msv-help pre code {
+    display: block;
+}
 </style>
 
 <div class="wrap msv-help">

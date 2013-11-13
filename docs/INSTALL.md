@@ -83,3 +83,12 @@ Certain Settings changes in the WordPress plugin do not require a restart of the
 If you change any other settings, the WordPress plugin will create an empty file ``$WORDPRESS/wp-content/plugins/music-stream-vote/php-irc-2.2.1/modules/musicstreamvote/restart`` which will be detected by the bot and trigger a restart **only if the bot is on the same host**.
 
 If the bot is running on a different host, you must go to where ``run-bot.sh`` is running, terminate it with CTRL-C (or a service control command if you installed it as a service), and start it again manually.
+
+## Creating WordPress Pages ##
+
+Once you have the plugin and the IRC bot up and running, you should probably do something like the following:
+
+1. Place the ``[recent_tracks]`` shortcode on your home page.
+2. Create a "Last 24 Hours" page and place the ``[last_day]`` shortcode on it.
+3. Create a "Top 100 By Vote" page and place the ``[top_hundred]`` shortcode on it.
+4. Create a page with a title like "IRC Help" explaining how to get to the chat room and how to use the bot's commands there -- including the actual command names you assigned to all the commands (which are configurable on the Settings screen).
