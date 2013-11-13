@@ -14,22 +14,22 @@ class BotService {
      */
     function __construct() {
         add_action("parse_request", function( $wp) {
-	    	if ( $_POST[PLUGIN_SLUG . '_botcall'] == '1' ) {
-	    		Util::fix_wp_slashes();
-	    		$method = $_POST['method'];
-	    		$args = json_decode( $_POST['args'], TRUE );
+            if ( $_POST[PLUGIN_SLUG . '_botcall'] == '1' ) {
+                Util::fix_wp_slashes();
+                $method = $_POST['method'];
+                $args = json_decode( $_POST['args'], TRUE );
 
-	    		if ( $args['web_service_password'] != Options::get_instance()->web_service_password ) {
-	    			$this->fail( 'Invalid system_password.' );
-	    		}
+                if ( $args['web_service_password'] != Options::get_instance()->web_service_password ) {
+                    $this->fail( 'Invalid system_password.' );
+                }
                 if ( ! method_exists( $this, 'web_' . $method ) ) {
                     $this->fail( 'Invalid method name.' );
                 }
-    			$result = call_user_func( array( &$this, 'web_' . $method ), $args );
+                $result = call_user_func( array( &$this, 'web_' . $method ), $args );
 
-	    		echo json_encode( $result );
-	    		exit;
-	    	}
+                echo json_encode( $result );
+                exit;
+            }
         });
     }
 
