@@ -1,4 +1,4 @@
-jQuery(document).ready(function($) {
+jQuery( document ).ready( function( $ ) {
 	window.setTimeout( function() {
 		$( '.updated' ).slideUp();
 	}, 5000	);
@@ -27,4 +27,4 @@ jQuery(document).ready(function($) {
 		var id = ('' + location.hash).substring( 5 );
 		goto_id( id );
 	}
-});
+} );

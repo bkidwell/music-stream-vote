@@ -1,4 +1,4 @@
-jQuery(document).ready(function($) {
+jQuery( document ).ready( function( $ ) {
 	var np = $( '.now-playing' );
 	var recent = $( '.recent-tracks' );
 
@@ -22,4 +22,4 @@ jQuery(document).ready(function($) {
 	if ( np.length || recent.length ) {
 		window.setTimeout( loadNowPlaying, 10000 );	
 	}
-});
+} );

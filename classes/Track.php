@@ -60,6 +60,28 @@ class Track {
         return $id;
     }
 
+    public static function get_id( $stream_title ) {
+        global $wpdb;
+
+        $parts = explode( ' - ', $stream_title, 2 );
+        if ( count( $parts ) < 2 ) { $parts[1] = ''; }
+        $track_key = substr(
+            self::key_cleanup( $parts[0] ) . ' - ' . self::key_cleanup( $parts[1] ),
+            0, DB_STREAM_TITLE_LEN
+        );
+
+        $id = $wpdb->get_var( $wpdb->prepare(
+            "
+                SELECT id
+                FROM " . Track::table_name() . "
+                WHERE track_key = %s
+            ", 
+            $track_key
+        ) );
+        
+        return $id;
+    }
+
     /**
      * Update aggregate vote values for this 'track_id'.
      * @param  int $track_id

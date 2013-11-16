@@ -116,4 +116,47 @@ class Vote {
         );
     }
 
+    /**
+     * Get last 1000 votes by nick
+     * @param  string $nick
+     * @return int
+     */
+    public static function get_votes_by_nick( $nick ) {
+        global $wpdb;
+
+        return $wpdb->get_results( $wpdb->prepare(
+            "
+                SELECT v.time_utc, v.stream_title, t.title, t.artist, v.track_id, v.value
+                FROM ".Vote::table_name()." v
+                LEFT JOIN ".Track::table_name()." t ON t.id = v.track_id
+                WHERE nick=%s
+                AND deleted=0
+                ORDER BY time_utc DESC
+                LIMIT 1000
+            ",
+            substr( $nick, 0, DB_NICK_LEN )
+        ), ARRAY_A );
+    }
+
+    /**
+     * Get last 1000 votes by nick
+     * @param  string $nick
+     * @return int
+     */
+    public static function get_votes_by_track_id( $track_id ) {
+        global $wpdb;
+
+        return $wpdb->get_results( $wpdb->prepare(
+            "
+                SELECT time_utc, nick, value
+                FROM ".Vote::table_name()."
+                WHERE nick=%d
+                AND deleted=0
+                ORDER BY time_utc DESC
+                LIMIT 1000
+            ",
+            substr( $track_id, 0, DB_NICK_LEN )
+        ), ARRAY_A );
+    }
+
 }
