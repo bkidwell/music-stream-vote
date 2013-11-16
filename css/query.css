@@ -1,0 +1,4 @@
+#music_query_form input[type=submit],
+#music_query_form input[type=button] {
+    padding: .2em;
+}

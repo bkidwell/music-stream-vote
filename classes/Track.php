@@ -82,6 +82,50 @@ class Track {
         return $id;
     }
 
+    public static function get( $track_id ) {
+        global $wpdb;
+
+        return $wpdb->get_row( $wpdb->prepare(
+            "
+                SELECT *
+                FROM " . Track::table_name() . "
+                WHERE id = %d
+            ", 
+            $track_id
+        ), OBJECT );
+    }
+
+    public static function search( $artist, $title ) {
+        global $wpdb;
+
+        if ( strlen($artist) == 0 && strlen($title) == 0 ) {
+            return NULL;
+        }
+
+        $cond = array();
+        $cond_parm = array();
+        if ( $artist ) {
+            $cond[] = 'artist LIKE %s';
+            $cond_parm[] = '%' . $artist . '%';
+        }
+        if ( $title ) {
+            $cont[] = 'title LIKE %s';
+            $cond_parm[] = '%' . $title . '%';
+        }
+
+        $sql = $wpdb->prepare(
+            "
+                SELECT stream_title, artist, title, play_count, vote_count, vote_total
+                FROM " . Track::table_name() . "
+                WHERE " . implode( ' AND ', $cond ) . "
+                ORDER BY vote_total DESC
+            ",
+            $cond_parm
+        );
+
+        return $wpdb->get_results( $sql, ARRAY_A );
+    }
+
     /**
      * Update aggregate vote values for this 'track_id'.
      * @param  int $track_id
@@ -170,17 +214,43 @@ class Track {
      * Get top 100 tracks by vote.
      * @return object[]
      */
-    public static function top_hundred_by_vote() {
+    public static function top_hundred_by_vote( $start_time, $end_time) {
         global $wpdb;
 
-        return $wpdb->get_results(
+        if ( (! $start_time) && (! $end_time) ) {
+            return $wpdb->get_results(
+                "
+                    SELECT stream_title, artist, title, vote_total
+                    FROM ".Track::table_name()."
+                    WHERE vote_total IS NOT NULL
+                    ORDER BY vote_total DESC LIMIT 100
+                "
+                , ARRAY_A
+            );
+        }
+
+        $cond = array( 'v.deleted = 0' );
+        $cond_parm = array();
+        if ( $start_time ) {
+            $cond[] = 'v.time_utc >= %s';
+            $cond_parm[] = $start_time;
+        }
+        if ( $end_time ) {
+            $cond[] = 'v.time_utc < %s';
+            $cond_parm[] = $end_time;
+        }
+
+        return $wpdb->get_results( $wpdb->prepare (
             "
-                SELECT stream_title, vote_total
-                FROM ".Track::table_name()."
-                WHERE vote_total IS NOT NULL
-                ORDER BY vote_total DESC LIMIT 100
+                SELECT t.stream_title, t.artist, t.title, SUM(v.value) vote_total
+                FROM wp_musvote_track t
+                LEFT JOIN wp_musvote_vote v on v.track_id=t.id
+                WHERE " . implode( ' AND ', $cond ) . "
+                GROUP BY t.id
+                ORDER BY vote_total DESC, t.artist, t.title
             "
-        );
+            , $cond_parm
+        ), ARRAY_A );
     }
 
     /**

@@ -81,4 +81,62 @@ class Play {
         );
     }
 
+    public static function playlist( $start_time, $end_time) {
+        global $wpdb;
+
+        if ( (! $start_time) && (! $end_time) ) {
+            return NULL;
+        }
+
+        $cond_parm = array();
+        if ( $start_time ) {
+            $cond[] = 'p.time_utc >= %s';
+            $cond_parm[] = $start_time;
+        }
+        if ( $end_time ) {
+            $cond[] = 'p.time_utc < %s';
+            $cond_parm[] = $end_time;
+        }
+
+/* echo "<pre>" . $wpdb->prepare (
+            "
+                SELECT p.time_utc, t.artist, t.title, (
+                    SELECT SUM(value) FROM ".Vote::table_name()." pv
+                    WHERE pv.deleted=0
+                    AND pv.time_utc >= p.time_utc AND pv.time_utc < p.time_utc + INTERVAL 30 MINUTE
+                ) vote_total
+                FROM ".Play::table_name()." p
+                LEFT JOIN ".Track::table_name()." t on t.id=p.track_id
+                WHERE " . implode( ' AND ', $cond ) . "
+                ORDER BY p.time_utc ASC
+            "
+            , $cond_parm
+        ); exit; */
+
+        return $wpdb->get_results( $wpdb->prepare (
+            "
+                SELECT p.time_utc, t.artist, t.title, (
+                    SELECT SUM(value) FROM ".Vote::table_name()." pv
+                    WHERE pv.deleted=0 AND pv.track_id=p.track_id
+                    AND pv.time_utc >= p.time_utc AND pv.time_utc < p.time_utc + INTERVAL 30 MINUTE
+                ) vote_total
+                FROM ".Play::table_name()." p
+                LEFT JOIN ".Track::table_name()." t on t.id=p.track_id
+                WHERE " . implode( ' AND ', $cond ) . "
+                ORDER BY p.time_utc ASC
+            "
+            , $cond_parm
+        ), ARRAY_A );
+    }
+
 }
+
+/*
+SELECT p.time_utc, t.artist, t.title, (
+   SELECT SUM(value) FROM wp_musvote_vote pv
+   WHERE pv.track_id=p.track_id AND pv.time_utc >= p.time_utc AND pv.time_utc < p.time_utc + INTERVAL 30 MINUTE
+) vote_total
+FROM wp_musvote_play p
+LEFT JOIN wp_musvote_track t on t.id=p.track_id
+ */
+

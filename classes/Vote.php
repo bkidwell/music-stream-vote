@@ -57,7 +57,7 @@ class Vote {
                 LIMIT 1
             ",
             substr( $nick, 0, DB_NICK_LEN )
-        ) );
+        ), ARRAY_A );
     }
 
     /**
@@ -121,21 +121,36 @@ class Vote {
      * @param  string $nick
      * @return int
      */
-    public static function get_votes_by_nick( $nick ) {
+    public static function get_votes_by_nick( $nick, $start_date, $end_date ) {
         global $wpdb;
 
-        return $wpdb->get_results( $wpdb->prepare(
+        if ( $start_date ) {
+            $start_date = $wpdb->prepare(
+                "AND v.time_utc >= %s", $start_date
+            );
+        }
+        if ( $end_date ) {
+            $end_date = $wpdb->prepare(
+                "AND time_utc < DATE_ADD(STR_TO_DATE(%s, %s), INTERVAL 1 DAY)", array($end_date, '%m/%d/%Y')
+            );
+        }
+
+        $sql = $wpdb->prepare(
             "
                 SELECT v.time_utc, v.stream_title, t.title, t.artist, v.track_id, v.value
                 FROM ".Vote::table_name()." v
                 LEFT JOIN ".Track::table_name()." t ON t.id = v.track_id
                 WHERE nick=%s
                 AND deleted=0
+                $start_date
+                $end_date
                 ORDER BY time_utc DESC
                 LIMIT 1000
             ",
             substr( $nick, 0, DB_NICK_LEN )
-        ), ARRAY_A );
+        );
+
+        return $wpdb->get_results( $sql, ARRAY_A );
     }
 
     /**
@@ -150,12 +165,12 @@ class Vote {
             "
                 SELECT time_utc, nick, value
                 FROM ".Vote::table_name()."
-                WHERE nick=%d
+                WHERE track_id=%d
                 AND deleted=0
                 ORDER BY time_utc DESC
                 LIMIT 1000
             ",
-            substr( $track_id, 0, DB_NICK_LEN )
+            $track_id
         ), ARRAY_A );
     }
 

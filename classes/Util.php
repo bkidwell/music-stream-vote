@@ -9,6 +9,8 @@ namespace GlumpNet\WordPress\MusicStreamVote;
  * @package  music-stream-vote
  */
 class Util {
+    private static $slashes_fixed = FALSE;
+
 	/**
      * Convert last JSON error to a string.
      * @return string
@@ -31,6 +33,9 @@ class Util {
      * @return void
      */
     public function fix_wp_slashes() {
+        if ( self::$slashes_fixed ) { return; }
+        self::$slashes_fixed = TRUE;
+
         function stripslashes_array(&$arr) {
             foreach ($arr as $k => &$v) {
                 $nk = stripslashes($k);
