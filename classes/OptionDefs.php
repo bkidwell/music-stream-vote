@@ -74,6 +74,14 @@ public static $option_defs = array(
         'r' => TRUE,
     ),
 
+    'irc_msg_type' => array(
+        't' => 'Message type',
+        'h' => '"notice" or "privmsg"; "privmsg" looks like a normal user talking and "notice" should get a less conspicuous alert in the user\'s chat program. Some servers won\'t let your bot send a "notice".',
+        'c' => '',
+        'd' => 'privmsg',
+        'r' => TRUE,
+    ),
+
 ),
 'WordPress Integration' => array(
 

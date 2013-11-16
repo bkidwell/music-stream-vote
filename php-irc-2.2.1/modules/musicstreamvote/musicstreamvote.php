@@ -431,6 +431,20 @@ class musicstreamvote extends module {
     }
 
     /**
+     * Send appropriate kind of IRC message (notice or privMsg according to options)
+     * @param  string $to recipient
+     * @param  string $output_line output
+     * @return void
+     */
+    private function channel_say( $to, $output_line ) {
+        if ( strcasecmp( $this->options['irc_msg_type'], 'notice' ) == 0 ) {
+            $this->ircClass->notice( $to, $output_line, $queue = 1 );
+        } else {
+            $this->ircClass->privMsg( $to, $output_line, $queue = 1 );
+        }
+    }
+
+    /**
      * Reply to nick (PM) or channel (not PM)
      * @param  string[] $line the data received from the framework for this event
      * @param  string $text what to say
@@ -449,9 +463,9 @@ class musicstreamvote extends module {
         );
         foreach ( explode( "\n", $text ) as $output_line ) {
             if ( $to == $line['fromNick'] ) {
-                $this->ircClass->privMsg($to, $output_line, $queue = 1);    
+                $this->ircClass->privMsg( $to, $output_line, $queue = 1 );
             } else {
-                $this->ircClass->notice($to, $output_line, $queue = 1);
+                $this->channel_say( $to, $output_line );
             }
         }
     }
@@ -475,8 +489,8 @@ class musicstreamvote extends module {
                         $key, $output_line, $queue = 1
                     );
                 } else {
-                    $this->ircClass->notice(
-                        $key, $output_line, $queue = 1
+                    $this->channel_say(
+                        $key, $output_line
                     );
                 }
             }
@@ -588,8 +602,8 @@ class musicstreamvote extends module {
 
         if ( $data['status'] == 'error' ) {
             foreach ( $this->in_channels as $key => $value ) {
-                $this->ircClass->notice(
-                    $key, "\02Error:\017 " . $data['error_message'], $queue = 1
+                $this->channel_say(
+                    $key, "\02Error:\017 " . $data['error_message']
                 );
             }
         }

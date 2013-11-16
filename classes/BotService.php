@@ -123,7 +123,7 @@ class BotService {
         return array(
             'status' => 'ok',
             'output' => $opt->txt_help,
-            'private' => $opt
+            'private' => $opt->txt_help_switch
         );
     }
 
