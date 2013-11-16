@@ -20,6 +20,14 @@ class ShortCodes {
         add_shortcode( 'music_query', array( &$this, 'music_query' ) );
         add_action( 'wp_enqueue_scripts', array( &$this, 'add_js' ) );
         add_action( 'wp_head', array( &$this, 'js_vars' ) );
+        add_action( 'init', array( &$this, 'url_params' ) );
+    }
+
+    public function url_params() {
+        global $wp; 
+        foreach ( History::$field_names as $f ) {
+            $wp->add_query_var( $f );
+        }
     }
 
     /**

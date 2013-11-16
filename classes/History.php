@@ -11,26 +11,24 @@ namespace GlumpNet\WordPress\MusicStreamVote;
 class History {
     public $form_state;
     public $view = array();
-    public $field_names;
+    public static $field_names = [
+        'music_query', 'nick', 'artist', 'title',
+        'start_date', 'start_time', 'end_date', 'end_time'
+    ];
 
     /**
      * Register shortcodes and their helper functions.
      */
     public function __construct() {
-        $this->field_names = [
-            'music_query', 'nick', 'artist', 'title',
-            'start_date', 'start_time', 'end_date', 'end_time'
-        ];
-
         $this->form_state = 'whichtype';
 
-        if ( array_key_exists( 'music_query', $_GET ) ) {
+        if ( get_query_var( 'music_query' ) ) {
             // display search form
             Util::fix_wp_slashes();
 
-            $this->form_state = $_GET['music_query'];
-            foreach ( $this->field_names as $f ) {
-                $this->view[$f] = $_GET[$f];
+            $this->form_state = get_query_var( 'music_query' );
+            foreach ( self::$field_names as $f ) {
+                $this->view[$f] = get_query_var( $f );
             }
         }
     }
@@ -46,7 +44,7 @@ class History {
         if ( $p['query'] ) {
             parse_str( $p['query'], $tmp );
             foreach ( $tmp as $key => $value ) {
-                if ( ! in_array( $key, $this->field_names ) ) {
+                if ( ! in_array( $key, self::$field_names ) ) {
                     $out_parms[$key] = $value;
                 }
             }
@@ -65,7 +63,7 @@ class History {
 
     public function wp_view_state() {
         foreach ( $_GET as $key => $value ) {
-            if ( array_search ( $key, $this->field_names ) === FALSE ) {
+            if ( array_search ( $key, self::$field_names ) === FALSE ) {
                 echo '<input type="hidden" name="' . esc_attr( $key ) .
                 '" value="' . esc_attr( $value) . '" />' . "\n";
             }
