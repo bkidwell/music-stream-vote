@@ -30,6 +30,13 @@ class History {
             foreach ( self::$field_names as $f ) {
                 $this->view[$f] = get_query_var( $f );
             }
+        } elseif ( strpos( $_SERVER['REQUEST_URI'], 'music_query=' ) !== FALSE ) {
+            // display search form
+            parse_str( substr( $_SERVER['REQUEST_URI'], strpos( $_SERVER['REQUEST_URI'], '?' ) + 1 ), $args );
+            $this->form_state = $args['music_query'];
+            foreach ( self::$field_names as $f ) {
+                $this->view[$f] = $args[$f];
+            }
         }
     }
 
@@ -100,7 +107,7 @@ class History {
     }
 
     public function render_results() {
-        if ( $this->form_state == 'which_type' ) { return ''; }
+        if ( $this->form_state == 'whichtype' ) { return ''; }
 
         wp_enqueue_script(
             PLUGIN_SLUG . '-tablesorter', PLUGIN_URL . 'lib/jquery.tablesorter/jquery.tablesorter.min.js'
