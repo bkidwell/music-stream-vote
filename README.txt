@@ -36,6 +36,11 @@ See [full documentation](https://github.com/bkidwell/music-stream-vote/tree/mast
 
 == Changelog ==
 
+= 1.2 =
+* [In progress]
+* Web UI to allow guests to search for votes by track or by nick, or fetch a playlist for a time period. (Mostly implemented now in `master` branch. TODO docs.)
+* TODO: Download all history (with nicks only, not full IRC user ID) as SQLite data file.
+
 = 1.1 =
 * First stable release.
 * Abbreviated "!stats" output in chat room to cut down on getting kicked by channel minder bot.
