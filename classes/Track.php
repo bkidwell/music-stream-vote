@@ -214,7 +214,7 @@ class Track {
      * Get top 100 tracks by vote.
      * @return object[]
      */
-    public static function top_hundred_by_vote( $start_time, $end_time) {
+    public static function top_hundred_by_vote( $start_time = NULL, $end_time = NULL) {
         global $wpdb;
 
         if ( (! $start_time) && (! $end_time) ) {

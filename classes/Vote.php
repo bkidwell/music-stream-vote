@@ -121,7 +121,7 @@ class Vote {
      * @param  string $nick
      * @return int
      */
-    public static function get_votes_by_nick( $nick, $start_date=null, $end_date=null ) {
+    public static function get_votes_by_nick( $nick, $start_date = NULL, $end_date = NULL ) {
         global $wpdb;
 
         if ( $start_date ) {
