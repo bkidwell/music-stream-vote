@@ -243,8 +243,8 @@ class Track {
         return $wpdb->get_results( $wpdb->prepare (
             "
                 SELECT t.stream_title, t.artist, t.title, SUM(v.value) vote_total
-                FROM wp_musvote_track t
-                LEFT JOIN wp_musvote_vote v on v.track_id=t.id
+                FROM ".Track::table_name()." t
+                LEFT JOIN ".Vote::table_name()." v on v.track_id=t.id
                 WHERE " . implode( ' AND ', $cond ) . "
                 GROUP BY t.id
                 ORDER BY vote_total DESC, t.artist, t.title
