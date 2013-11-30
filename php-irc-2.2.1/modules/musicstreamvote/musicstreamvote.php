@@ -71,6 +71,16 @@ class musicstreamvote extends module {
      * @var string
      */
     private $last_error = '';
+    /**
+     * Remember last stream status error message so it isn't repeated.
+     * @var string
+     */
+    private $last_stream_error = '';
+    /**
+     * Count of consecutive stream status query successes. (After a few, reset $last_stream_error .)
+     * @var int
+     */
+    private $stream_success_count = 0;
 
     /**
      * Start bot.
@@ -147,6 +157,7 @@ class musicstreamvote extends module {
      */
     public function evt_stream_poll() {
         $data = $this->streaminfo( $this->options['stream_status_url'] );
+        if ( $data['status'] != 'ok' ) { return TRUE; }
 
         if ( $data['stream_title'] != $this->now_playing ) {
             $this->now_playing = $data['stream_title'];
@@ -586,7 +597,7 @@ class musicstreamvote extends module {
         $data['stream_title'] = '';
         ob_end_clean();
 
-        if ( $result === FALSE ) {
+        if ( ( $result === FALSE ) || ( strlen( trim( $data['xml'] ) ) == 0 ) ) {
             $data = array();
             $data['status'] = 'error';
             $data['error_message'] = $error;
@@ -595,19 +606,34 @@ class musicstreamvote extends module {
             $data['status'] = 'ok';
             $data['error_message'] = '';
             $info = new SimpleXMLElement($data['xml']);
-            $data['stream_title'] = $this->decode_bad_html_entities(
-                (string) $info->trackList[0]->track[0]->title[0]
-            );
+            //if ( $info->xpath( '*/track/title' ) ) {
+                $data['stream_title'] = $this->decode_bad_html_entities(
+                    (string) $info->trackList[0]->track[0]->title[0]
+                );
+            //} else {
+            //    $data['stream_title'] = '[offline]';
+            //}
         }
 
-        if ( $data['status'] == 'error' ) {
+        if ( ( $data['status'] == 'error' ) && ( $this->last_stream_error != $data['error_message'] ) ) {
             foreach ( $this->in_channels as $key => $value ) {
                 $this->channel_say(
-                    $key, "\02Error:\017 " . $data['error_message']
+                    $key, "\02Stream status error:\017 " . $data['error_message']
                 );
             }
+            $this->last_stream_error = $data['error_message'];
         }
-  
+        if ( $data['status'] == 'ok' ) {
+            // after 24 good queries (4 minutes by default) reset last error message
+            $this->stream_success_count++;
+            if ( $this->stream_success_count >= 24 ) {
+                $this->stream_success_count = 24;
+                $this->last_stream_error = '';
+            }
+        } else {
+            $this->stream_success_count = 0;
+        }
+
         return $data;
     }
 
