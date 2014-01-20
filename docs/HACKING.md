@@ -6,7 +6,7 @@ See [./classes/Db.php](https://github.com/bkidwell/music-stream-vote/blob/master
 
 ## WordPress Plugin ##
 
-The startup file for the plugin is [./music-stream-vote.php](https://github.com/bkidwell/music-stream-vote/blob/master/music-stream-vote.php) . After defining a bunch of constants and a class loader function for the ``GlumpNet\WordPress`` namespace, it instantiates these main classes:
+The startup file for the plugin is [./music-stream-vote.php](https://github.com/bkidwell/music-stream-vote/blob/master/music-stream-vote.php) . After defining a bunch of constants and a class loader function for the ``GlumpNet\WordPress\MusicStreamVote`` namespace, it instantiates these main classes:
 
 ### Classes ###
 
