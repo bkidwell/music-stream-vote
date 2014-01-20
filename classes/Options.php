@@ -36,10 +36,10 @@ class Options {
      */
     private $defaults = NULL;
     /**
-     * Bot needs to be restarted after last save().
+     * Last save() triggered a restart.
      * @var boolean
      */
-    public $need_restart = FALSE;
+    public $restarted = FALSE;
 
     private function __construct() {
         $this->option_names = array();
@@ -100,13 +100,14 @@ class Options {
      * @return void
      */
     public function save() {
+        $need_restart = FALSE;
         foreach ( OptionDefs::$option_defs as $group => $defs ) {
             foreach ( $defs as $opt_name => $attr ) {
                 if (
                     $attr['r'] &&
                     $this->opt[$opt_name] != $this->opt_before[$opt_name]
                 ) {
-                    $this->need_restart = TRUE;
+                    $need_restart = TRUE;
                 }
             }
         }
@@ -117,6 +118,11 @@ class Options {
             "web_service_url = \"$this->web_service_url\"\n" .
             "web_service_password = \"$this->web_service_password\"\n"
         );
+
+        if ( $need_restart ) {
+            touch( BOT_DIR . 'modules/musicstreamvote/restart' );
+            $this->restarted = TRUE;
+        }
     }
 
     /**

@@ -66,6 +66,14 @@ public static $option_defs = array(
         'r' => TRUE,
     ),
 
+    'irc_admin_users' => array(
+        't' => 'List of users who can give admin commands',
+        'h' => 'Separated by spaces. User must be authenticated by NickServ or command will fail. Ex: "alice bob".',
+        'c' => '',
+        'd' => '',
+        'r' => FALSE,
+    ),
+
     'irc_ident' => array(
         't' => 'Ident string',
         'h' => 'Appears in long IRC username string after nick.',
@@ -228,6 +236,21 @@ public static $option_defs = array(
         'r' => TRUE,
     ),
 
+    'cmd_set' => array(
+        't' => 'Set Option command',
+        'h' => '[Admin only] Example: !set',
+        'c' => '',
+        'd' => '!set',
+        'r' => TRUE,
+    ),
+    'cmd_set_switch' => array(
+        't' => 'Set Option command enabled',
+        'h' => '',
+        'c' => '',
+        'd' => '1',
+        'r' => TRUE,
+    ),
+
 ),
 'Responses' => array(
 
@@ -337,6 +360,21 @@ public static $option_defs = array(
     ),
     'txt_stats_switch' => array(
         't' => 'Stats private reply',
+        'h' => '',
+        'c' => '',
+        'd' => '0',
+        'r' => FALSE,
+    ),
+
+    'txt_set_response' => array(
+        't' => 'Set Option',
+        'h' => 'Example: <b>${nick}</b> changed options: ${opts}',
+        'c' => 'msv-input-wide',
+        'd' => '<b>${nick}</b> changed options: ${opts}',
+        'r' => FALSE,
+    ),
+    'txt_set_response_switch' => array(
+        't' => 'Set Option private reply',
         'h' => '',
         'c' => '',
         'd' => '0',

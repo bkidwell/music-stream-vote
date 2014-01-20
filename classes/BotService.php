@@ -135,7 +135,7 @@ class BotService {
     private function web_sayhi( $args ) {
         $opt = Options::get_instance();
         $out = str_ireplace( '${nick}', $args['nick'], $opt->txt_sayhi );
-        $out = str_ireplace( '${cmd_help}', split( ' ', $opt->cmd_help )[0], $out );
+        $out = str_ireplace( '${cmd_help}', explode( ' ', $opt->cmd_help )[0], $out );
         $out = str_ireplace( '${value}', $num_txt, $out );
 
         return array(
@@ -178,7 +178,7 @@ class BotService {
         if ( $num === FALSE ) {
             $this->fail(
                 $nick . ': Invalid vote value. Say "' .
-                split( ' ', $opt->cmd_help )[0] . '" for help.'
+                explode( ' ', $opt->cmd_help )[0] . '" for help.'
             );
         }
 
@@ -249,6 +249,74 @@ class BotService {
             'error_message' => '',
             'output' => $out,
             'private' => $opt->txt_unvote_response_switch
+        );
+    }
+
+    /**
+     * (Web service method) Set some options
+     * @param  mixed[] $args values (semi-colon separated list of [name space value]); nick; user_id; is_authed (0|1)
+     * @return mixed[] status; error_message; output (what to announce in IRC chat room)
+     */
+    private function web_set_option( $args ) {
+        $nick = $args['nick'];
+        $opt = Options::get_instance();
+        $is_authed = $args['is_authed'];
+        $new_opts_text = $args['values'];
+
+        $admin_nicks = explode( ' ', strtolower($opt->irc_admin_users) );
+        if (
+            ( $is_authed == '0' ) ||
+            ( ! in_array( strtolower( $nick ), $admin_nicks ) )
+        ) {
+            $this->fail(
+                $nick . ': Not authorized.'
+            );
+        }
+
+        $names = $opt->get_option_names();
+
+        $new_opts_text = str_replace( "\\\\", "\002", $new_opts_text );
+        $new_opts_text = str_replace( "\\;", "\001", $new_opts_text );
+        $parts = explode( ';', $new_opts_text );
+        $new_opts = array();
+        foreach ( $parts as $v ) {
+            $v = str_replace( "\001", ";", $v );
+            $v = str_replace( "\002", "\\", $v );
+            $v = trim( $v );
+            if ( strlen( $v ) ) {
+                $new_opt = explode( ' ', $v, 2 );
+                if ( count( $new_opt ) > 1 ) {
+                    if ( ! in_array( $new_opt[0], $names ) ) {
+                        $this->fail(
+                            $nick . ': Invalid option name "' . $new_opt[0] . '".'
+                        );
+                    }
+                    $new_opts[$new_opt[0]] = $new_opt[1];
+                }
+            }
+        }
+
+        // $this->fail( json_encode($new_opts) );
+
+        foreach ( $new_opts as $k => $v ) {
+            $opt->__set( $k, $v );
+        }
+        $opt->save();
+
+        $out = str_ireplace( '${nick}', $nick, $opt->txt_set_response );
+        $out = str_ireplace(
+            '${opts}',
+            implode( ', ', array_keys( $new_opts ) ),
+            $out
+        );
+
+        // $this->fail( $out );
+
+        return array(
+            'status' => 'ok',
+            'error_message' => '',
+            'output' => $out,
+            'private' => $opt->txt_set_response_switch
         );
     }
 

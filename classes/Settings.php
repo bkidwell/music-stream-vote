@@ -105,10 +105,7 @@ class Settings {
                 }
             }
             $opt->save();
-            if ( $opt->need_restart ) {
-                touch( BOT_DIR . 'modules/musicstreamvote/restart' );
-                $opt_restarted = TRUE;
-            }
+            $opt_restarted = $opt->restarted;
             $opt_saved = TRUE;
     	}
 

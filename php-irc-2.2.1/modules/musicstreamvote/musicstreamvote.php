@@ -65,7 +65,7 @@ class musicstreamvote extends module {
      * Votes that are waiting for WHOIS responses from IRC server
      * @var mixed[]
      */
-    private $pending_votes = array();
+    private $pending_cmd = array();
     /**
      * Remember last error message so it isn't repeated.
      * @var string
@@ -244,11 +244,15 @@ class musicstreamvote extends module {
     private function evt_whois( $line, $args ) {
         $cmd = $line['cmd'];
         $subject = $line['params'];
-        if ( array_key_exists( $subject, $this->pending_votes ) ) {
+        if ( array_key_exists( $subject, $this->pending_cmd ) ) {
             if ( $cmd == 307 ) {
-                $this->pending_votes[$subject]['is_authed'] = 1;
+                $this->pending_cmd[$subject]['is_authed'] = 1;
             } elseif ( $cmd == 318 ) {
-                $this->cmd_vote_finish( $subject );
+                if ( $this->pending_cmd[$subject]['cmd'] == 'vote' ) {
+                    $this->cmd_vote_finish( $subject );
+                } elseif ( $this->pending_cmd[$subject]['cmd'] == 'set' ) {
+                    $this->cmd_set_finish( $subject );
+                }
             }
         }
     }
@@ -311,6 +315,7 @@ class musicstreamvote extends module {
     public function cmd_vote( $line, $args ) {
         $fromNick = $line['fromNick'];
         $vote = array(
+            'cmd' => 'vote',
             'line' => $line,
             'time_utc' => date('Y-m-d H:i:s', time() ),
             'stream_title' => $this->now_playing,
@@ -319,7 +324,7 @@ class musicstreamvote extends module {
             'user_id' => $line['from'],
             'is_authed' => 0
         );
-        $this->pending_votes[$fromNick] = $vote;
+        $this->pending_cmd[$fromNick] = $vote;
         $this->ircClass->sendRaw( "WHOIS $fromNick" );
     }
 
@@ -332,7 +337,7 @@ class musicstreamvote extends module {
      * @return void
      */
     public function cmd_vote_finish( $subject ) {
-        $vote = $this->pending_votes[$subject];
+        $vote = $this->pending_cmd[$subject];
         $line = $vote['line'];
         $response = $this->webservice( 'post_vote', array(
             'time_utc' => $vote['time_utc'],
@@ -345,7 +350,53 @@ class musicstreamvote extends module {
         if ( $response['output'] ) {
             $this->reply( $line, $response['output'], $response['private'] );
         }
-        unset($this->pending_votes[$subject]);
+        unset($this->pending_cmd[$subject]);
+    }
+
+    /**
+     * Set Option. (Part 1.)
+     *
+     * Invoked by the framework.
+     * 
+     * @param  string[] $line
+     * @param  string[] $args
+     * @return void
+     */
+    public function cmd_set( $line, $args ) {
+        $fromNick = $line['fromNick'];
+        $vote = array(
+            'cmd' => 'set',
+            'line' => $line,
+            'values' => $args['query'],
+            'nick' => $fromNick,
+            'user_id' => $line['from'],
+            'is_authed' => 0
+        );
+        $this->pending_cmd[$fromNick] = $vote;
+        $this->ircClass->sendRaw( "WHOIS $fromNick" );
+    }
+
+    /**
+     * Set Option. (Part 2.)
+     *
+     * Invoked by the evt_whois().
+     * 
+     * @param  string $subject nick who owns the pending options
+     * @return void
+     */
+    public function cmd_set_finish( $subject ) {
+        $new_opts = $this->pending_cmd[$subject];
+        $line = $new_opts['line'];
+        $response = $this->webservice( 'set_option', array(
+            'values' => $new_opts['values'],
+            'nick' => $new_opts['nick'],
+            'user_id' => $new_opts['user_id'],
+            'is_authed' => $new_opts['is_authed'],
+        ), $line );
+        if ( $response['output'] ) {
+            $this->reply( $line, $response['output'], $response['private'] );
+        }
+        unset($this->pending_cmd[$subject]);
     }
 
     /**
