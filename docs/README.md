@@ -12,6 +12,8 @@
 * Configurable IRC commands and responses (enable, disable, change response text) for "Say hi", "Help", "Vote", "Unvote", "Now Playing", and "Stats".
 * Report Top 10 tracks in chat room.
 * Report Top 100 tracks and last 24 hours of play on web site.
+* Search form allows web site visitors to query voting history.
+* HTML5 audio player with current and recent track titles displayed.
 
 ## Requirements ##
 

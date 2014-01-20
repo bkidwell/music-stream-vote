@@ -20,6 +20,8 @@ Features:
 * Configurable IRC commands and responses (enable, disable, change response text) for "Say hi", "Help", "Vote", "Unvote", "Now Playing", and "Stats".
 * Report Top 10 tracks in chat room.
 * Report Top 100 tracks and last 24 hours of play on web site.
+* Search form allows web site visitors to query voting history.
+* HTML5 audio player with current and recent track titles displayed.
 
 See [full documentation](https://github.com/bkidwell/music-stream-vote/tree/master/docs) on the [GitHub project page](https://github.com/bkidwell/music-stream-vote) .
 
@@ -30,16 +32,23 @@ See [full documentation](https://github.com/bkidwell/music-stream-vote/tree/mast
 * A WordPress web site.
     * PHP 5.4+ (WordPress requires 5.2.4 but Music Stream Vote requires 5.4).
     * MySQL 5.0+.
+    * ``php5-json`` package (doesn't come with PHP by default in some operating systems)
 * A host to run the IRC bot -- preferably the same as the WordPress site, but not necessarily.
     * PHP 5.4+
     * Linux or a Unix OS on the bot host. Not a strict requirement, but at the moment the control script and instructions will require some expertise to adapt it to Windows.
+    * ``php5-json`` and ``php5-curl`` packages (don't come with PHP by default in some operating systems)
 
 == Changelog ==
 
 = 1.2 =
-* [In progress]
-* Web UI to allow guests to search for votes by track or by nick, or fetch a playlist for a time period. (Mostly implemented now in `master` branch. TODO docs.)
-* TODO: Download all history (with nicks only, not full IRC user ID) as SQLite data file.
+* Fix: Don't repeat the same error message endlessly in the IRC chat room.
+* Fix: Declare database tables with ``utf8`` character set to prevent garbled non-Latin characters.
+* Fix: Only show first alias for `!help` command when making error message.
+* Fix: Better focus setting when clicking a tab in Settings.
+* Added: Search form allows web site visitors to query voting history.
+* Added: HTML5 player launched with [launch_player] shortcode.
+* Added: Proper cleanup when uninstalling (plugin's tables and options are deleted).
+* Added: Admin-only ``!set`` command to change options from within IRC.
 
 = 1.1 =
 * First stable release.

@@ -88,7 +88,7 @@ If the bot is running on a different host, you must go to where ``run-bot.sh`` i
 
 Once you have the plugin and the IRC bot up and running, you should probably do something like the following:
 
-1. Place the ``[recent_tracks]`` shortcode on your home page.
+1. Place the ``[recent_tracks]`` and ``[launch_player]`` shortcodes on your home page.
 2. Create a "Last 24 Hours" page and place the ``[last_day]`` shortcode on it.
 3. Create a "Top 100 By Vote" page and place the ``[top_hundred]`` shortcode on it.
 4. Create a "Search Voting History" and place the ``[music_query]`` shortcode on it.
