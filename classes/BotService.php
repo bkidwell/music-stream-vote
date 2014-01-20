@@ -135,7 +135,7 @@ class BotService {
     private function web_sayhi( $args ) {
         $opt = Options::get_instance();
         $out = str_ireplace( '${nick}', $args['nick'], $opt->txt_sayhi );
-        $out = str_ireplace( '${cmd_help}', $opt->cmd_help, $out );
+        $out = str_ireplace( '${cmd_help}', split( ' ', $opt->cmd_help )[0], $out );
         $out = str_ireplace( '${value}', $num_txt, $out );
 
         return array(
@@ -178,7 +178,7 @@ class BotService {
         if ( $num === FALSE ) {
             $this->fail(
                 $nick . ': Invalid vote value. Say "' .
-                $opt->cmd_help . '" for help.'
+                split( ' ', $opt->cmd_help )[0] . '" for help.'
             );
         }
 
