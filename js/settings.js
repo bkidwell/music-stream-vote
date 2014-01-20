@@ -15,15 +15,13 @@ jQuery( document ).ready( function( $ ) {
 		tabc.hide();
 		var div = $( '#tabc_' + id );
 		div.show();
-		window.setTimeout( function() {
-			div.find( 'input:first' ).focus();
-		}, 100 );
-		// alert(div.find('input:first').html());
+		div.find( 'input:first' ).focus();
 	};
 
 	tabs.click( function( event ) {
 		var id = $( event.target ).attr( 'href' ).substring( 5 );
 		goto_id( id );
+		event.preventDefault();
 	} );
 
 	if ( location.hash ) {
