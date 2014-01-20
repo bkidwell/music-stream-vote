@@ -21,6 +21,7 @@ namespace GlumpNet\WordPress\MusicStreamVote;
 	<script type="text/javascript">
 	MUSIC_STREAM_VOTE_URL = '<?php echo PLUGIN_URL; ?>';
 	STREAM_URL = '<?php echo esc_js( $opt->stream_audio_url ); ?>';
+	PLAYER_TITLE = '<?php echo esc_js( $opt->player_title ); ?>';
 	</script>
 	<script type="text/javascript" src="<?php echo PLUGIN_URL; ?>js/player.js"></script>
 </head>
@@ -45,29 +46,6 @@ namespace GlumpNet\WordPress\MusicStreamVote;
 	<p>Recent tracks:<br />
 		<span class="recent-tracks">
 		</span>
-	</p>
-
-	<p>
-		<button id="persona-login" type="button" class="btn btn-default">
-			Login
-		</button>
-		<button id="persona-logout" type="button" class="btn btn-default">
-			Log out
-		</button>
-	</p>
-
-	<p>
-		<button type="button" class="btn btn-default">-5</button>
-		<button type="button" class="btn btn-default">-4</button>
-		<button type="button" class="btn btn-default">-3</button>
-		<button type="button" class="btn btn-default">-2</button>
-		<button type="button" class="btn btn-default">-1</button>
-		<button type="button" class="btn btn-default"> 0</button><br />
-		<button type="button" class="btn btn-default">+1</button>
-		<button type="button" class="btn btn-default">+2</button>
-		<button type="button" class="btn btn-default">+3</button>
-		<button type="button" class="btn btn-default">+4</button>
-		<button type="button" class="btn btn-default">+5</button>
 	</p>
 
 </div>

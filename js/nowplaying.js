@@ -22,4 +22,12 @@ jQuery( document ).ready( function( $ ) {
 	if ( np.length || recent.length ) {
 		window.setTimeout( loadNowPlaying, 10000 );	
 	}
+
+	$( '.launch-player' ).click( function(evnet) {
+		var url = $(this).attr( 'href' );
+		var windowName = 'audioStreamPlayer';
+		var windowSize = 'width=350,height=500,scrollbars=yes';
+		window.open( url, windowName, windowSize );
+		return false;
+	} );
 } );

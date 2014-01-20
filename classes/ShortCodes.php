@@ -18,6 +18,7 @@ class ShortCodes {
         add_shortcode( 'last_day', array( &$this, 'last_day' ) );
         add_shortcode( 'top_hundred', array( &$this, 'top_hundred' ) );
         add_shortcode( 'music_query', array( &$this, 'music_query' ) );
+        add_shortcode( 'launch_player', array( &$this, 'launch_player' ) );
         add_action( 'wp_enqueue_scripts', array( &$this, 'add_js' ) );
         add_action( 'wp_head', array( &$this, 'js_vars' ) );
         add_action( 'init', array( &$this, 'url_params' ) );
@@ -119,9 +120,29 @@ class ShortCodes {
         return implode( $out );
     }
 
+    /**
+     * Music Query form
+     * @param  string[] $atts
+     * @return string
+     */
     public function music_query() {
         $hist = new History();
         return $hist->render_form() . $hist->render_results();
+    }
+
+    /**
+     * Launch player app
+     * @param  string[] $atts
+     * @param  string $content
+     * @return string
+     */
+    public function launch_player( $atts, $content = null ) {
+        return
+            '<a class="launch-player" href="' .
+            esc_url( home_url( '/' ) ) .
+            '?' . PLUGIN_SLUG . '_player=1">' .
+            $content .
+            '</a>';
     }
 
 }

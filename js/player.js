@@ -45,10 +45,12 @@ jQuery( document ).ready( function( $ ) {
 	var recent = $( '.recent-tracks' );
 
 	var now_playing_text = '';
+	var doc_title = $("title");
 	var loadNowPlaying = function() {
 		$.get( MUSIC_STREAM_VOTE_URL + 'now_playing.txt', function( data ) {
 			if ( data != now_playing_text ) {
 				now_playing_text = data;
+				doc_title.text(data + " - " + PLAYER_TITLE);
 				np.text( data );
 				if ( recent.length ) {
 					$.get( MUSIC_STREAM_VOTE_URL + 'recent_tracks.txt', function( data ) {
@@ -73,24 +75,5 @@ jQuery( document ).ready( function( $ ) {
 	if ( np.length || recent.length ) {
 		window.setTimeout( loadNowPlaying, 100 );	
 	}
-
-
-	var currentUser = 'anonymous';
-	navigator.id.watch( {
-		loggedInUser: currentUser,
-		onlogin: function( assertion ) {
-			alert('login:' + assertion );
-		},
-		onlogout: function() {
-			alert('logout');
-		}
-	} );
-
-	$("#persona-login").click( function() {
-		navigator.id.request();
-	} );
-	$("#persona-logout").click( function() {
-		navigator.id.logout();
-	} );
 
 });
