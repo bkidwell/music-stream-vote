@@ -136,7 +136,7 @@ class ShortCodes {
      * @param  string $content
      * @return string
      */
-    public function launch_player( $atts, $content = null ) {
+    public function launch_player( $atts, $content = "Launch player" ) {
         return
             '<a class="launch-player" href="' .
             esc_url( home_url( '/' ) ) .
