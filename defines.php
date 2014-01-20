@@ -1,5 +1,4 @@
 <?php
-
 namespace GlumpNet\WordPress\MusicStreamVote;
 
 /**
