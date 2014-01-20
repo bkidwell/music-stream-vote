@@ -9,3 +9,4 @@ Music Stream Vote includes in its source code and distribution Zip files the fol
 * [PHP-IRC v2.2.1](http://www.phpbots.org/) -- &copy; 2001-2006 Manick; GPL 2 or later
 * [PHP Markdown](http://michelf.ca/projects/php-markdown/) -- &copy; 2004-2013 Michel Fortin; see web site.
 * [PHP SmartyPants](http://michelf.ca/projects/php-smartypants/) -- &copy; 2004-2013 Michel Fortin; see web site.
+* [jPlayer](http://jplayer.org/) -- &copy; 2013 Happyworm; MIT license

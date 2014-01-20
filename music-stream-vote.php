@@ -62,6 +62,7 @@ if (version_compare(phpversion(), REQUIRE_PHP_VER, ">=")) {
     new Settings();   // settings screen
     new BotService(); // web service for IRC bot
     new ShortCodes(); // shortcodes
+    new Player();     // web player
 
     //register_activation_hook( __FILE__, __NAMESPACE__ . '\\activate' );
     //register_deactivation_hook( __FILE__, __NAMESPACE__ . '\\deactivate' );
