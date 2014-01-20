@@ -46,7 +46,7 @@ class Db {
             KEY (play_count),
             KEY (vote_count),
             KEY (vote_total)
-        );
+        ) CHARACTER SET utf8;
 
         CREATE TABLE ".Play::table_name()." (
             id int(11) NOT NULL AUTO_INCREMENT,
@@ -57,7 +57,7 @@ class Db {
             KEY (track_id),
             KEY (time_utc),
             CONSTRAINT ".Play::table_name()."_ibfk_1 FOREIGN KEY (track_id) REFERENCES ".Track::table_name()." (id)
-        );
+        ) CHARACTER SET utf8;
 
         CREATE TABLE ".Vote::table_name()." (
             id int(11) NOT NULL AUTO_INCREMENT,
@@ -75,7 +75,7 @@ class Db {
             KEY (time_utc),
             KEY (nick),
             CONSTRAINT ".Vote::table_name()."_ibfk_1 FOREIGN KEY (track_id) REFERENCES ".Track::table_name()." (id)
-        );
+        ) CHARACTER SET utf8;
 
         ";
 
