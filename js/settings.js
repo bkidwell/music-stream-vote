@@ -9,13 +9,16 @@ jQuery( document ).ready( function( $ ) {
 	if ( tabs.length == 0 ) { return; }
 
 	var goto_id = function ( id ) {
-		var target = $('#tab_' + id);
-		tabs.removeClass('nav-tab-active');
-		target.addClass('nav-tab-active');
+		var target = $( '#tab_' + id );
+		tabs.removeClass( 'nav-tab-active' );
+		target.addClass( 'nav-tab-active' );
 		tabc.hide();
 		var div = $( '#tabc_' + id );
 		div.show();
-		div.find( 'input:first' ).focus();
+		window.setTimeout( function() {
+			div.find( 'input:first' ).focus();
+		}, 100 );
+		// alert(div.find('input:first').html());
 	};
 
 	tabs.click( function( event ) {
