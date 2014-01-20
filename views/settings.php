@@ -73,7 +73,7 @@ foreach ( $option_defs as $group_name => $defs ) : ?>
 	<table class="form-table">
 	<?php if ( $group_name == 'Commands' ) : ?>
 		<thead><tr>
-			<th></th><th>Command Name</th><th>Enabled</th>
+			<th></th><th>Command Name and Aliases</th><th>Enabled</th>
 		</tr></thead>
 	<?php elseif ( $group_name == 'Responses' ) : ?>
 		<thead><tr>
