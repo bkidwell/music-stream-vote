@@ -20,9 +20,11 @@
 * A WordPress web site.
     * PHP 5.4+ (WordPress requires 5.2.4 but Music Stream Vote requires 5.4).
     * MySQL 5.0+.
+    * ``php5-json`` package (doesn't come with PHP by default in some operating systems)
 * A host to run the IRC bot -- preferably the same as the WordPress site, but not necessarily.
     * PHP 5.4+
     * Linux or a Unix OS on the bot host. Not a strict requirement, but at the moment the control script and instructions will require some expertise to adapt it to Windows.
+    * ``php5-json`` and ``php5-curl`` packages (don't come with PHP by default in some operating systems)
 
 ## History ##
 
