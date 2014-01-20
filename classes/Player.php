@@ -15,6 +15,7 @@ class Player {
     function __construct() {
         add_action("parse_request", function( $wp) {
             if ( $_GET[PLUGIN_SLUG . '_player'] == '1' ) {
+                $opt = Options::get_instance();
                 $site_root = esc_url( home_url( '/' ) );
                 include( PLUGIN_DIR . 'views/player.php' );
                 exit;

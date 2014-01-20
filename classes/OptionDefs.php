@@ -392,6 +392,30 @@ public static $option_defs = array(
         'r' => TRUE,
     ),
 
+    'stream_audio_url' => array(
+        't' => 'Audio stream URL',
+        'h' => 'A direct URL to an HTML5-compatible audio stream.',
+        'c' => 'msv-input-wide',
+        'd' => '',
+        'r' => FALSE,
+    ),
+
+    'player_title' => array(
+        't' => 'HTML5 player title',
+        'h' => '',
+        'c' => 'msv-input-wide',
+        'd' => '',
+        'r' => FALSE,
+    ),
+
+    'player_banner_url' => array(
+        't' => 'HTML5 player banner URL',
+        'h' => 'Image to show instead of title',
+        'c' => 'msv-input-wide',
+        'd' => '',
+        'r' => FALSE,
+    ),
+
 ),
 
 

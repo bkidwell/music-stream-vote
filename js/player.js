@@ -1,9 +1,8 @@
 $ = jQuery;
-// mp3: "http://stream2.fralnet.com:8000/music-128.mp3",
 jQuery( document ).ready( function( $ ) {
 	var stream = {
-		title: "OO Radio",
-		mp3: "http://stream2.fralnet.com:8000/music-128.mp3"
+		title: "audio stream",
+		mp3: STREAM_URL
 	},
 	ready = false;
 
@@ -53,15 +52,15 @@ jQuery( document ).ready( function( $ ) {
 				np.text( data );
 				if ( recent.length ) {
 					$.get( MUSIC_STREAM_VOTE_URL + 'recent_tracks.txt', function( data ) {
-						recent.html("");
-						$.each(data.split("\n"), function(i, row) {
-							var cols = row.split("\t");
-							$("<span />").text(
-								(new Date(cols[0])).toString().split(' ')[4].substring(0, 5)
-							).appendTo(recent);
-							recent.append("&nbsp; ");
-							$("<span />").text(cols[1]).appendTo(recent);
-							recent.append("<br />");
+						recent.html( '' );
+						$.each( data.split( '\n' ), function(i, row) {
+							var cols = row.split( '\t' );
+							$( '<span /> ').text(
+								(new Date( cols[0] )).toString().split( ' ' )[4].substring( 0, 5 )
+							).appendTo( recent );
+							recent.append( '&nbsp; ' );
+							$( '<span />' ).text( cols[1] ).appendTo( recent );
+							recent.append( '<br />' );
 						});
 					} );
 				}
@@ -74,4 +73,24 @@ jQuery( document ).ready( function( $ ) {
 	if ( np.length || recent.length ) {
 		window.setTimeout( loadNowPlaying, 100 );	
 	}
+
+
+	var currentUser = 'anonymous';
+	navigator.id.watch( {
+		loggedInUser: currentUser,
+		onlogin: function( assertion ) {
+			alert('login:' + assertion );
+		},
+		onlogout: function() {
+			alert('logout');
+		}
+	} );
+
+	$("#persona-login").click( function() {
+		navigator.id.request();
+	} );
+	$("#persona-logout").click( function() {
+		navigator.id.logout();
+	} );
+
 });
