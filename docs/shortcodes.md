@@ -6,5 +6,4 @@ The following shortcodes are supported in WordPress Pages and Posts:
 * [recent_tracks] -- Shows current track and most recent 5 before that. Updates every 10 seconds.
 * [last_day] -- Shows last 24 hours of tracks played.
 * [top_hundred] -- Shows top 100 tracks by vote total.
-
-*A future release of Music Stream Vote will provide parameters for these short codes and probably a query form for the web site viewer.*
+* [music_query] -- Display a search form to allow the reader to search for votes and tracks by *track*, *nick*, *popularity*, or *play time*.

@@ -262,7 +262,7 @@ public static $option_defs = array(
         'r' => FALSE,
     ),
     'txt_sayhi_switch' => array(
-        't' => 'Say hi private reply',
+        't' => 'Reply context (1 for "sender", 0 for "same context")',
         'h' => '',
         'c' => '',
         'd' => '0',
@@ -284,7 +284,7 @@ public static $option_defs = array(
         'r' => FALSE,
     ),
     'txt_help_switch' => array(
-        't' => 'Help private reply',
+        't' => 'Reply context (1 for "sender", 0 for "same context")',
         'h' => '',
         'c' => '',
         'd' => '0',
@@ -299,7 +299,7 @@ public static $option_defs = array(
         'r' => FALSE,
     ),
     'txt_now_playing_switch' => array(
-        't' => 'Now playing private reply',
+        't' => 'Reply context (1 for "sender", 0 for "same context")',
         'h' => '',
         'c' => '',
         'd' => '0',
@@ -314,7 +314,7 @@ public static $option_defs = array(
         'r' => FALSE,
     ),
     'txt_vote_response_switch' => array(
-        't' => 'Vote private reply',
+        't' => 'Reply context (1 for "sender", 0 for "same context")',
         'h' => '',
         'c' => '',
         'd' => '0',
@@ -329,7 +329,7 @@ public static $option_defs = array(
         'r' => FALSE,
     ),
     'txt_revote_response_switch' => array(
-        't' => 'Re-Vote private reply',
+        't' => 'Reply context (1 for "sender", 0 for "same context")',
         'h' => '',
         'c' => '',
         'd' => '0',
@@ -344,7 +344,7 @@ public static $option_defs = array(
         'r' => FALSE,
     ),
     'txt_unvote_response_switch' => array(
-        't' => 'Unvote private reply',
+        't' => 'Reply context (1 for "sender", 0 for "same context")',
         'h' => '',
         'c' => '',
         'd' => '0',
@@ -359,7 +359,7 @@ public static $option_defs = array(
         'r' => FALSE,
     ),
     'txt_stats_switch' => array(
-        't' => 'Stats private reply',
+        't' => 'Reply context (1 for "sender", 0 for "same context")',
         'h' => '',
         'c' => '',
         'd' => '0',
@@ -374,7 +374,7 @@ public static $option_defs = array(
         'r' => FALSE,
     ),
     'txt_set_response_switch' => array(
-        't' => 'Set Option private reply',
+        't' => 'Reply context (1 for "sender", 0 for "same context")',
         'h' => '',
         'c' => '',
         'd' => '0',

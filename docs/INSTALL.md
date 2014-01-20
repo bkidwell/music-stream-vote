@@ -91,4 +91,5 @@ Once you have the plugin and the IRC bot up and running, you should probably do 
 1. Place the ``[recent_tracks]`` shortcode on your home page.
 2. Create a "Last 24 Hours" page and place the ``[last_day]`` shortcode on it.
 3. Create a "Top 100 By Vote" page and place the ``[top_hundred]`` shortcode on it.
-4. Create a page with a title like "IRC Help" explaining how to get to the chat room and how to use the bot's commands there -- including the actual command names you assigned to all the commands (which are configurable on the Settings screen).
+4. Create a "Search Voting History" and place the ``[music_query]`` shortcode on it.
+5. Create a page with a title like "IRC Help" explaining how to get to the chat room and how to use the bot's commands there -- including the actual command names you assigned to all the commands (which are configurable on the Settings screen).

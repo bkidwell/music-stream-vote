@@ -39,34 +39,19 @@ class Help {
      */
     private function __construct() {
         $this->docs_dir = PLUGIN_DIR . 'docs/';
-
-        /* Inefficient ...
-        $this->pages[] = array( 'README', 'Readme' );
-        $d = dir( $this->docs_dir );
-        while ( ($entry = $d->read()) !== FALSE ) {
-            if ( substr( $entry, -3 ) != '.md' ) { continue; }
-            if ( $entry == 'README.md' ) { continue; }
-            $filename = substr( $entry, 0, strlen( $entry ) - 3 );
-            $f = fopen( $this->docs_dir . $entry, "r");
-            $title = trim( str_replace( '#', '', fgets( $f, 4096 ) ) );
-            if ( $title ) {
-                $this->pages[] = array( $filename, $title );
-            }
-            fclose( $f );
-        }
-        $d->close();
-        */
        
         $this->pages = [
             ['README', 'Readme'],
             ['INSTALL', 'Installation'],
+            ['commands', 'Commands'],
+            ['option_names', 'Option Names'],
             ['HACKING', 'Hacking'],
             ['shortcodes', 'Shortcodes'],
-            ['viewing_historical_data', 'Viewing Historical Data'],
             ['../LICENSE', 'License'],
         ];
         $this->contextual_pages = [
             ['overview', 'Overview'],
+            ['options_from_irc', 'Set Options from IRC'],
             ['shortcodes', 'Shortcodes'],
             ['../LICENSE', 'License'],
         ];
@@ -92,6 +77,31 @@ class Help {
         return $this->contextual_pages;
     }
 
+    private function option_defs() {
+        $out = array();
+        foreach ( OptionDefs::$option_defs as $groupname => $group ) {
+            $out[] = "## $groupname ##";
+            $out[] = "";
+            foreach ( $group as $key => $option ) {
+                $out[] = "``$key``";
+                $out[] = '';
+                $d = $option['t'];
+                if ( strlen( $option['h'] ) ) {
+                    $d .= ' -- ' . $option['h'];
+                }
+                if ( strlen( $d ) == 0 ) {
+                    $d = ' ';
+                }
+                $out[] = ':   ' . $d;
+                $out[] = '';
+            }
+        }
+        // echo "<pre>"; die(implode( "\n", $out ));
+        $text = str_replace( '<', '&lt;', implode( "\n", $out ) );
+        $text = str_replace( '>', '&gt;', $text );
+        return $text;
+    }
+
     /**
      * Render a help page. Called by Settings->display_settings() .
      * @return [type] [description]
@@ -105,7 +115,10 @@ class Help {
             $page_name = $_GET['help'];
         }
         $markdown = file_get_contents( "$this->docs_dir$page_name.md" );
-        $html = \Michelf\Markdown::defaultTransform( $markdown );
+        if ( $page_name == 'option_names' ) {
+            $markdown .= $this->option_defs();
+        }
+        $html = \Michelf\MarkdownExtra::defaultTransform( $markdown );
         $html = \SmartyPants( $html );
         $pages = $this->pages;
 
