@@ -85,8 +85,14 @@ class Settings {
         $opt_restarted = FALSE;
         $out = array();
 
-        $out['start_time'] = date_i18n(
-            "Y-m-d H:i:s O", $state->last_checkin_utc + (get_option('gmt_offset') * 60 * 60), TRUE
+        $out['start_time'] = (
+            $state->last_checkin_utc
+            ? date_i18n(
+                "Y-m-d H:i:s O",
+                $state->last_checkin_utc + (get_option('gmt_offset') * 60 * 60),
+                TRUE
+            )
+            : '<em>unknown</em>'
         );
 
     	if ( $_POST[PLUGIN_SLUG . '_o'] == '1' ) {
