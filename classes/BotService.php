@@ -283,7 +283,7 @@ class BotService {
             ( ! in_array( strtolower( $nick ), $admin_nicks ) )
         ) {
             $this->fail(
-                $nick . ': Not authorized.'
+                "$nick: Not authorized."
             );
         }
 
@@ -331,6 +331,42 @@ class BotService {
             'error_message' => '',
             'output' => $out,
             'private' => $opt->txt_set_response_switch
+        );
+    }
+
+    /**
+     * (Web service method) Say text in a channel
+     * @param  mixed[] $args values (semi-colon separated list of [name space value]); nick; user_id; is_authed (0|1)
+     * @return mixed[] status; error_message; output (what to announce in IRC chat room)
+     */
+    private function web_say( $args ) {
+        $nick = $args['nick'];
+        $opt = Options::get_instance();
+        $is_authed = $args['is_authed'];
+        $text = $args['text'];
+
+        $admin_nicks = explode( ' ', strtolower($opt->irc_admin_users) );
+        if (
+            ( $is_authed == '0' ) ||
+            ( ! in_array( strtolower( $nick ), $admin_nicks ) )
+        ) {
+            $this->fail(
+                "$nick: Not authorized."
+            );
+        }
+
+        $a = explode( ' ', $text, 2 );
+        if ( count( $a ) < 2 ) {
+            $this->fail( "$nick: Wrong number of arguments." );
+        }
+        if ( substr( $a[0], 0, 1 ) != "#" ) {
+            $this->fail( "$nick: First argument must be a channel." );
+        }
+        return array(
+            'status' => 'ok',
+            'error_message' => '',
+            'output' => $a[1],
+            'channel' => $a[0]
         );
     }
 

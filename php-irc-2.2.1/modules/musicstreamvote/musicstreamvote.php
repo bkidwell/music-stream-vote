@@ -252,6 +252,10 @@ class musicstreamvote extends module {
                     $this->cmd_vote_finish( $subject );
                 } elseif ( $this->pending_cmd[$subject]['cmd'] == 'set' ) {
                     $this->cmd_set_finish( $subject );
+                } elseif ( $this->pending_cmd[$subject]['cmd'] == 'say' ) {
+                    $this->cmd_say_finish( $subject );
+                } elseif ( $this->pending_cmd[$subject]['cmd'] == 'do' ) {
+                    $this->cmd_do_finish( $subject );
                 }
             }
         }
@@ -395,6 +399,98 @@ class musicstreamvote extends module {
         ), $line );
         if ( $response['output'] ) {
             $this->reply( $line, $response['output'], $response['private'] );
+        }
+        unset($this->pending_cmd[$subject]);
+    }
+
+    /**
+     * Say. (Part 1.)
+     *
+     * Invoked by the framework.
+     * 
+     * @param  string[] $line
+     * @param  string[] $args
+     * @return void
+     */
+    public function cmd_say( $line, $args ) {
+        $fromNick = $line['fromNick'];
+        $vote = array(
+            'cmd' => 'say',
+            'line' => $line,
+            'text' => $args['query'],
+            'nick' => $fromNick,
+            'user_id' => $line['from'],
+            'is_authed' => 0
+        );
+        $this->pending_cmd[$fromNick] = $vote;
+        $this->ircClass->sendRaw( "WHOIS $fromNick" );
+    }
+
+    /**
+     * Say. (Part 2.)
+     *
+     * Invoked by the evt_whois().
+     * 
+     * @param  string $subject nick who owns the pending options
+     * @return void
+     */
+    public function cmd_say_finish( $subject ) {
+        $new_opts = $this->pending_cmd[$subject];
+        $line = $new_opts['line'];
+        $response = $this->webservice( 'say', array(
+            'text' => $new_opts['text'],
+            'nick' => $new_opts['nick'],
+            'user_id' => $new_opts['user_id'],
+            'is_authed' => $new_opts['is_authed'],
+        ), $line );
+        if ( $response['output'] ) {
+            $this->ircClass->privMsg( $response['channel'], $response['output'], $queue = 1 );
+        }
+        unset($this->pending_cmd[$subject]);
+    }
+
+    /**
+     * Do. (Part 1.)
+     *
+     * Invoked by the framework.
+     * 
+     * @param  string[] $line
+     * @param  string[] $args
+     * @return void
+     */
+    public function cmd_do( $line, $args ) {
+        $fromNick = $line['fromNick'];
+        $vote = array(
+            'cmd' => 'do',
+            'line' => $line,
+            'text' => $args['query'],
+            'nick' => $fromNick,
+            'user_id' => $line['from'],
+            'is_authed' => 0
+        );
+        $this->pending_cmd[$fromNick] = $vote;
+        $this->ircClass->sendRaw( "WHOIS $fromNick" );
+    }
+
+    /**
+     * Do. (Part 2.)
+     *
+     * Invoked by the evt_whois().
+     * 
+     * @param  string $subject nick who owns the pending options
+     * @return void
+     */
+    public function cmd_do_finish( $subject ) {
+        $new_opts = $this->pending_cmd[$subject];
+        $line = $new_opts['line'];
+        $response = $this->webservice( 'say', array(
+            'text' => $new_opts['text'],
+            'nick' => $new_opts['nick'],
+            'user_id' => $new_opts['user_id'],
+            'is_authed' => $new_opts['is_authed'],
+        ), $line );
+        if ( $response['output'] ) {
+            $this->ircClass->action( $response['channel'], $response['output'], $queue = 1 );
         }
         unset($this->pending_cmd[$subject]);
     }

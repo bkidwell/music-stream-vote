@@ -251,6 +251,36 @@ public static $option_defs = array(
         'r' => TRUE,
     ),
 
+    'cmd_say' => array(
+        't' => 'Say command',
+        'h' => '[Admin only] Example: !say',
+        'c' => '',
+        'd' => '!say',
+        'r' => TRUE,
+    ),
+    'cmd_say_switch' => array(
+        't' => 'Say command enabled',
+        'h' => '',
+        'c' => '',
+        'd' => '1',
+        'r' => TRUE,
+    ),
+
+    'cmd_do' => array(
+        't' => 'Action command',
+        'h' => '[Admin only] Example: !do',
+        'c' => '',
+        'd' => '!do',
+        'r' => TRUE,
+    ),
+    'cmd_do_switch' => array(
+        't' => 'Action command enabled',
+        'h' => '',
+        'c' => '',
+        'd' => '1',
+        'r' => TRUE,
+    ),
+
 ),
 'Responses' => array(
 

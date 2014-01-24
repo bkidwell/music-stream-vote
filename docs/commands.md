@@ -17,6 +17,14 @@ In order to use these admin commands, you must:
 
     Example: ``!set irc_channels #newchannel; irc_msg_type privmsg``
 
+``!say #CHANNEL text``
+
+:   Say text in #CHANNEL.
+
+``!do #CHANNEL text``
+
+:   Do ``/me text`` in #CHANNEL.
+
 ## User Commands ##
 
 These can be used by anyone in the IRC chat room. You can configure the response for each command in the "Responses" of the "Settings" Dashboard page.
