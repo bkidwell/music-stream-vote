@@ -1,0 +1,5 @@
+; <?php exit(); ?>
+// Save this file as 'bootstrap.conf.php' and fill in the blanks
+
+web_service_url = ""
+web_service_password = ""
