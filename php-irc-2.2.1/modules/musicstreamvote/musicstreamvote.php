@@ -51,6 +51,11 @@ class musicstreamvote extends module {
      * @var mixed[]
      */
     private $curl = array();
+	/**
+	 * "stream_title" that appeared before second-before last, or before "now_playing"
+	 * @var string
+	 */
+	private $now_playing_previous = '';
     /**
      * Last 'stream_title'
      * @var string
@@ -160,6 +165,10 @@ class musicstreamvote extends module {
         if ( $data['status'] != 'ok' ) { return TRUE; }
 
         if ( $data['stream_title'] != $this->now_playing ) {
+			// shift now_playing into now_playing_previous
+			$this->now_playing_previous = $this->now_playing
+			
+			// add the new song to now_playing
             $this->now_playing = $data['stream_title'];
             $this->now_playing_response = '';
             $this->dbg( 'Now playing: ' . $this->now_playing );
@@ -250,6 +259,8 @@ class musicstreamvote extends module {
             } elseif ( $cmd == 318 ) {
                 if ( $this->pending_cmd[$subject]['cmd'] == 'vote' ) {
                     $this->cmd_vote_finish( $subject );
+                } elseif ( $this->pending_cmd[$subject]['cmd'] == 'vote_previous' ) {
+                    $this->cmd_vote_finish( $subject );
                 } elseif ( $this->pending_cmd[$subject]['cmd'] == 'set' ) {
                     $this->cmd_set_finish( $subject );
                 } elseif ( $this->pending_cmd[$subject]['cmd'] == 'say' ) {
@@ -331,6 +342,35 @@ class musicstreamvote extends module {
         $this->pending_cmd[$fromNick] = $vote;
         $this->ircClass->sendRaw( "WHOIS $fromNick" );
     }
+
+	/**
+	 * Submit a vote of the previous playing song to WordPress. (Part 1.)
+	 * Does nothing and logs to debug if there is no previous song playing.
+	 *
+	 * @param  string[] $line
+	 * @param  string[] $args
+	 * @return void
+	 */
+	public function cmd_vote_previous( $line, $args ) {
+		if (empty($this->now_playing_previous)) {
+			$this->dbg( "Attempted to cmd_vote_previous on an empty now_playing_previous value." );	
+			return;
+		}
+
+		$fromNick = $line['fromNick'];
+        $vote = array(
+            'cmd' => 'vote_previous',
+            'line' => $line,
+            'time_utc' => date('Y-m-d H:i:s', time() ),
+            'stream_title' => $this->now_playing_previous,
+            'value' => $args['query'],
+            'nick' => $fromNick,
+            'user_id' => $line['from'],
+            'is_authed' => 0
+        );
+        $this->pending_cmd[$fromNick] = $vote;
+        $this->ircClass->sendRaw( "WHOIS $fromNick" );
+	}
 
     /**
      * Submit vote to WordPress. (Part 2.)
