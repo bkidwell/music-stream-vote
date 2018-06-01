@@ -281,6 +281,66 @@ public static $option_defs = array(
         'r' => TRUE,
     ),
 
+	/* vote for previous songs */
+	'cmd_vote_previous' => array(
+        't' => 'Vote previous command',
+        'h' => 'Example: !votep !vp',
+        'c' => '',
+        'd' => '!votep !vp',
+        'r' => TRUE,
+    ),
+    'cmd_vote_previous_switch' => array(
+        't' => 'Vote previous command enabled',
+        'h' => '',
+        'c' => '',
+        'd' => '1',
+        'r' => TRUE,
+    ),
+
+    'cmd_unvote_previous' => array(
+        't' => 'Unvote previous command',
+        'h' => 'Example: !unvote',
+        'c' => '',
+        'd' => '!unvotep',
+        'r' => TRUE,
+    ),
+    'cmd_unvote_previous_switch' => array(
+        't' => 'Unvote previous command enabled',
+        'h' => '',
+        'c' => '',
+        'd' => '1',
+        'r' => TRUE,
+    ),
+
+    'cmd_like_previous' => array(
+        't' => 'Like previous command',
+        'h' => 'Example: !lp',
+        'c' => '',
+        'd' => '!lp',
+        'r' => TRUE,
+    ),
+    'cmd_like_previous_switch' => array(
+        't' => 'Like previous command enabled',
+        'h' => '',
+        'c' => '',
+        'd' => '1',
+        'r' => TRUE,
+    ),
+
+    'cmd_hate_previous' => array(
+        't' => 'Hate previous command',
+        'h' => 'Example: !hp',
+        'c' => '',
+        'd' => '!h',
+        'r' => TRUE,
+    ),
+    'cmd_hate_previous_switch' => array(
+        't' => 'Hate previous command enabled',
+        'h' => '',
+        'c' => '',
+        'd' => '1',
+        'r' => TRUE,
+    ),
 ),
 'Responses' => array(
 
